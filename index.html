@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GameFeel Studio</title>
+<meta name="description" content="GameFeel Studio makes Unreal Engine plugins. FirebaseBP brings Firebase and Google Play services to Blueprint.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans:wght@400;500&display=swap">
+<style>
+/* Same palette and type as the FirebaseBP reference (Tools/DocGen/template.html). */
+:root {
+  --bg: #eef0f3; --surface: #ffffff; --ink: #18202c; --ink-2: #4a5566; --ink-3: #6f7a8b; --line: #d9dde4;
+  --accent: #d9761a; --accent-ink: #9a4f0b; --grid: rgba(24, 32, 44, 0.045); --hd: #3a6ea8;
+  --f-display: "Barlow Semi Condensed", "Arial Narrow", Arial, sans-serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #15181d; --surface: #1d2128; --ink: #e6e9ee; --ink-2: #aab3c0; --ink-3: #828c9b; --line: #313844;
+    --accent: #f0913a; --accent-ink: #f6b072; --grid: rgba(255, 255, 255, 0.035); --hd: #3d74b3; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; min-height: 100vh; color: var(--ink); font: 16px/1.6 var(--f-body);
+  background: var(--bg);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+main { max-width: 760px; margin: 0 auto; padding: 72px 16px 48px; }
+h1 { font: 700 44px/1.05 var(--f-display); margin: 0 0 8px; letter-spacing: 0.01em; }
+.lede { color: var(--ink-2); margin: 0 0 48px; font-size: 18px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.card header { background: var(--hd); color: #fff; padding: 10px 18px; font: 600 22px/1.2 var(--f-display); }
+.card .body { padding: 18px; }
+.card p { margin: 0 0 16px; color: var(--ink-2); }
+.facts { font: 13px/1.5 var(--f-mono); color: var(--ink-3); margin: 0 0 18px; }
+a.button { display: inline-block; background: var(--accent); color: #fff; text-decoration: none; padding: 9px 16px; border-radius: 6px; font-weight: 500; }
+a.button:hover { background: var(--accent-ink); }
+footer { margin-top: 48px; color: var(--ink-3); font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>GameFeel Studio</h1>
+  <p class="lede">Plugins for Unreal Engine.</p>
+
+  <section class="card">
+    <header>FirebaseBP</header>
+    <div class="body">
+      <p>Firebase and Google Play services for Unreal Engine, usable entirely from Blueprint.</p>
+      <p class="facts">Unreal Engine 5.8 · 17 modules · 436 Blueprint nodes</p>
+      <a class="button" href="firebasebp/">Node reference</a>
+    </div>
+  </section>
+
+  <footer>© GameFeel Studio</footer>
+</main>
+</body>
+</html>
