@@ -75,6 +75,8 @@
 }
 
 * { box-sizing: border-box; }
+/* Pages, search and filters work by toggling hidden; display: grid / flex rules must not undo it. */
+[hidden] { display: none !important; }
 body {
   background: var(--bg);
   background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
@@ -279,6 +281,15 @@ h3.group { margin: 6px 0 -4px; font: 600 13px var(--f-body); letter-spacing: 0.0
 .pinlist .ty { font: 11.5px var(--f-mono); color: var(--ink-3); }
 .node.bp .fn { margin: 6px 0 0; font: 11px var(--f-mono); color: var(--ink-3); overflow-wrap: anywhere; }
 
+/* Page navigation: current page in the rail, previous / next at the bottom. */
+.brand h1 a { color: inherit; text-decoration: none; }
+nav.rail a[aria-current="page"] { background: var(--surface); color: var(--ink); box-shadow: inset 3px 0 var(--accent); }
+.pager { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.pager a { display: grid; gap: 2px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); text-decoration: none; color: var(--ink); font: 600 17px var(--f-display); }
+.pager a:hover { border-color: var(--accent); }
+.pager a.next { text-align: right; grid-column: 2; }
+.pager small { font: 500 11px var(--f-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+
 /* Types fold as one block per module. */
 details.types { border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
 details.types > summary { cursor: pointer; padding: 10px 14px; font: 600 15px var(--f-display); letter-spacing: 0.02em; color: var(--ink-2); }
@@ -312,7 +323,7 @@ details.types > .cards { padding: 14px; }
 </style>
 
 <div class="topbar">
-  <div class="brand"><h1>Firebase<span>BP</span> Node Reference</h1><span class="ver" id="ver"></span></div>
+  <div class="brand"><h1><a href="#start">Firebase<span>BP</span> Node Reference</a></h1><span class="ver" id="ver"></span></div>
   <div class="search">
     <input id="q" type="search" placeholder="Search nodes, pins, types… (e.g. rewarded, claims, snapshot)" autocomplete="off" aria-label="Search the reference">
     <span class="count" id="count"></span>
@@ -494,7 +505,7 @@ function render() {
       list.sort((a, b) => order[a.kind] - order[b.kind] || a.title.localeCompare(b.title));
       html += `<h3 class="group">${esc(t)}</h3><div class="cards bpgrid">${list.map(n => nodeHtml(n)).join('')}</div>`;
     }
-    if (types.length) html += `<details class="types"><summary>Types · ${types.length} structs and enums used by these nodes</summary><div class="cards">${types.map(typeHtml).join('')}</div></details>`;
+    if (types.length) html += `<details class="types"><summary>Types · ${types.length === 1 ? '1 type' : `${types.length} structs and enums`} used by these nodes</summary><div class="cards">${types.map(typeHtml).join('')}</div></details>`;
     html += `</section>`;
     parts.push(html);
   }
@@ -539,13 +550,39 @@ function applyFilter() {
     d.open = !!(filtering && any);
   }
   for (const r of document.querySelectorAll('.recipe')) r.hidden = !!filtering;
-  for (const sec of document.querySelectorAll('section.module:not(#start):not(#settings)')) {
-    sec.hidden = ![...sec.querySelectorAll('.cards > .node')].some(c => !c.hidden);
+  // One module per page; a search looks through every module at once.
+  for (const sec of document.querySelectorAll('section.module')) {
+    sec.hidden = filtering
+      ? sec.id === 'start' || sec.id === 'settings' || ![...sec.querySelectorAll('.cards > .node')].some(c => !c.hidden)
+      : sec.id !== view;
   }
-  document.getElementById('start').hidden = !!filtering;
-  document.getElementById('settings').hidden = !!filtering;
-  document.getElementById('empty').hidden = shown > 0;
+  for (const p of document.querySelectorAll('.pager')) p.hidden = !!filtering;
+  document.getElementById('empty').hidden = !filtering || shown > 0;
   document.getElementById('count').textContent = filtering ? `${shown} / ${total}` : '';
+}
+
+let view = 'start';
+// Shows the page (module) holding the hash target, then scrolls to it; navigating ends a search.
+function go(hash) {
+  const id = decodeURIComponent((hash || '').slice(1));
+  const el = (id && document.getElementById(id)) || document.getElementById('start');
+  const sec = el.closest('section.module') || document.getElementById('start');
+  view = sec.id;
+  if (document.getElementById('q').value || plat) {
+    document.getElementById('q').value = '';
+    plat = '';
+    for (const o of document.querySelectorAll('.filters button')) o.setAttribute('aria-pressed', String(o.dataset.p === ''));
+  }
+  applyFilter();
+  for (const a of document.querySelectorAll('#rail a')) {
+    if (a.getAttribute('href') === '#' + view) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+  }
+  // Phones show the rail as a chip row: bring the current chip into it.
+  const chip = document.querySelector('#rail a[aria-current]');
+  const rail = document.querySelector('nav.rail');
+  if (chip && rail.scrollWidth > rail.clientWidth) rail.scrollLeft = chip.offsetLeft - 16;
+  for (let p = el.parentElement; p; p = p.parentElement) if (p.tagName === 'DETAILS') p.open = true;
+  if (el === sec) window.scrollTo(0, 0); else el.scrollIntoView();
 }
 
 render();
@@ -557,13 +594,13 @@ for (const b of document.querySelectorAll('.filters button')) {
     applyFilter();
   });
 }
-// Links into a folded Types block or Details open it first, then scroll.
-function reveal(hash) {
-  const el = hash && document.getElementById(decodeURIComponent(hash.slice(1)));
-  if (!el) return;
-  for (let p = el.parentElement; p; p = p.parentElement) if (p.tagName === 'DETAILS') p.open = true;
-  el.scrollIntoView();
-}
-window.addEventListener('hashchange', () => reveal(location.hash));
-reveal(location.hash);
+// Previous / next page links at the bottom of every page, in rail order.
+const pages = [...document.querySelectorAll('section.module')];
+const label = s => s.id === 'start' ? 'Getting started' : s.querySelector('.module-head h2').textContent;
+pages.forEach((sec, i) => {
+  const prev = pages[i - 1], next = pages[i + 1];
+  sec.insertAdjacentHTML('beforeend', `<nav class="pager" aria-label="Pages">${prev ? `<a href="#${prev.id}"><small>Previous</small>${esc(label(prev))}</a>` : '<span></span>'}${next ? `<a class="next" href="#${next.id}"><small>Next</small>${esc(label(next))}</a>` : ''}</nav>`);
+});
+window.addEventListener('hashchange', () => go(location.hash));
+go(location.hash);
 </script>
