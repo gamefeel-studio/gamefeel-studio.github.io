@@ -212,29 +212,40 @@ h3.group { margin: 6px 0 -4px; font: 600 13px var(--f-body); letter-spacing: 0.0
 
 .settings-cat h3 { margin: 10px 0 6px; font: 600 18px var(--f-display); }
 
-/* Overview: three pictogram steps and a tile per module. */
+/* Getting started: four numbered steps, each shown as a small mock of what you'll see. */
 .hero { display: grid; gap: 18px; }
 .hero h2 { margin: 0; font: 700 34px/1.1 var(--f-display); text-wrap: balance; }
 .hero .lede { margin: -8px 0 0; color: var(--ink-2); }
-.howto { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
-.howto li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 2px 12px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; }
-.howto .hico { grid-row: span 2; width: 44px; height: 44px; border-radius: 10px; display: grid; place-items: center; background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent-ink); }
-.howto .hico svg { width: 24px; height: 24px; }
-.howto b { font: 600 17px/1.2 var(--f-display); }
-.howto span:last-child { font: 400 12px/1.4 var(--f-mono); color: var(--ink-3); overflow-wrap: anywhere; }
-.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 10px; }
-.tile {
-  --tc: hsl(var(--h) 55% 45%);
-  display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 2px 12px; align-content: start;
-  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px; text-decoration: none; color: inherit;
-  transition: border-color 0.15s, transform 0.15s;
-}
-.tile:hover { border-color: var(--tc); transform: translateY(-1px); }
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; counter-reset: step; }
+.step { counter-increment: step; display: grid; grid-template-rows: auto auto 1fr; gap: 6px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; min-width: 0; }
+.step h3 { display: flex; align-items: center; gap: 10px; margin: 0; font: 600 19px/1.2 var(--f-display); }
+.step h3::before { content: counter(step); display: grid; place-items: center; flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #fff; font: 700 15px var(--f-display); }
+.step > p { margin: 0 0 4px; font-size: 13.5px; color: var(--ink-2); }
+.mock { align-self: start; background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; font-size: 12.5px; min-width: 0; }
+.mock .bar { display: flex; align-items: center; gap: 6px; padding: 6px 10px; border-bottom: 1px solid var(--line); font: 500 11px var(--f-mono); color: var(--ink-3); }
+.mock .bar i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+.mock .body { display: grid; gap: 6px; padding: 10px; }
+.mock .row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; min-width: 0; }
+.mock .row > span { min-width: 0; overflow-wrap: anywhere; }
+.mock .mi { flex: none; width: 18px; height: 18px; }
+.mock .dim { color: var(--ink-3); }
+.mock .file { font-family: var(--f-mono); font-weight: 600; color: var(--ink); white-space: nowrap; }
+.mock .btn { margin-left: auto; flex: none; white-space: nowrap; padding: 3px 8px; border-radius: 5px; background: var(--accent); color: #fff; font: 600 11px var(--f-body); }
+.mock .tag { margin-left: auto; flex: none; padding: 1px 7px; border-radius: 99px; border: 1px solid var(--line); font: 500 10.5px var(--f-mono); color: var(--ink-3); }
+.mock .hl { background: color-mix(in srgb, var(--accent) 14%, transparent); border-radius: 5px; padding: 3px 6px; margin: 0 -6px; }
+.mock .cbx { flex: none; width: 15px; height: 15px; border-radius: 3px; border: 1.5px solid var(--ink-3); display: grid; place-items: center; }
+.mock .cbx.on { background: var(--accent); border-color: var(--accent); }
+.mock .cbx.on::after { content: ""; width: 4px; height: 8px; border: solid #fff; border-width: 0 2px 2px 0; transform: translateY(-1px) rotate(45deg); }
+.mock.graph-mock { background: var(--bg); padding: 10px; }
+/* Always stacked here, like the phone layout: the card is too narrow for two nodes side by side. */
+.mock.graph-mock .graph { flex-direction: column; align-items: flex-start; overflow: visible; }
+.mock.graph-mock .wire { align-self: stretch; width: auto; height: 46px; margin: 0; padding-left: 40px; grid-template-columns: auto auto; align-items: center; justify-content: start; gap: 8px; }
+.mock.graph-mock .wire i { width: 3px; height: 100%; order: -1; }
+.mock.graph-mock .wire i::after { right: auto; left: -5px; top: auto; bottom: -2px; border-left: 6.5px solid transparent; border-right: 6.5px solid transparent; border-top: 9px solid var(--pin-exec); border-bottom: 0; }
+.tips { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 10px; }
+.tip { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: var(--r); border: 1px dashed var(--line); font-size: 13px; color: var(--ink-2); }
+.tip svg { flex: none; width: 22px; height: 22px; color: var(--accent-ink); }
 .mg { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 9px; background: hsl(var(--h) 55% 45%); color: #fff; font: 700 17px var(--f-display); letter-spacing: 0.02em; flex: none; }
-.tile .mg { grid-row: span 3; }
-.tile .tname { font: 600 18px/1.15 var(--f-display); }
-.tile .ttag { font-size: 12.5px; line-height: 1.4; color: var(--ink-2); }
-.tile .tcount { font: 400 11px var(--f-mono); color: var(--ink-3); }
 
 /* Module head with its monogram, then the Quick start graph. */
 .module-head .mg { align-self: center; width: 44px; height: 44px; font-size: 19px; }
@@ -485,26 +496,72 @@ function render() {
   const rail = [`<li><a href="#start"><span class="lbl"><span class="mg sm home">✦</span>Getting started</span></a></li>`];
   const parts = [];
   const SVG = {
-    file: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg>',
-    toggle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="6" rx="3"/><circle cx="17" cy="8" r="1.6" fill="currentColor"/><rect x="3" y="13" width="18" height="6" rx="3"/><circle cx="7" cy="16" r="1.6"/></svg>',
-    node: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="5" width="12" height="14" rx="2"/><path d="M3 9h12"/><path d="M15 13h6m-3-3 3 3-3 3"/></svg>',
+    folder: '<svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 6h7l2 2h9v11H3z"/></svg>',
+    file: '<svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg>',
+    android: '<svg class="mi" viewBox="0 0 24 24" fill="var(--android)"><path d="M6 10h12v7a1 1 0 0 1-1 1h-1v3h-2v-3h-4v3H8v-3H7a1 1 0 0 1-1-1zM4 10h1.5v6H4zM18.5 10H20v6h-1.5zM6.5 9a5.5 5.5 0 0 1 11 0z"/></svg>',
+    apple: '<svg class="mi" viewBox="0 0 24 24" fill="var(--ink-2)"><path d="M16.4 12.6c0-2.3 1.9-3.4 2-3.5a4.3 4.3 0 0 0-3.4-1.8c-1.4-.2-2.8.8-3.5.8s-1.9-.8-3.1-.8a4.6 4.6 0 0 0-3.9 2.4c-1.7 2.9-.4 7.2 1.2 9.6.8 1.2 1.7 2.5 3 2.4 1.2 0 1.6-.8 3.1-.8s1.8.8 3.1.8 2.1-1.2 2.9-2.4a10 10 0 0 0 1.3-2.7 4.2 4.2 0 0 1-2.7-4zM14.1 5.5A4 4 0 0 0 15 2.6a4.1 4.1 0 0 0-2.7 1.4 3.9 3.9 0 0 0-1 2.8 3.4 3.4 0 0 0 2.8-1.3z"/></svg>',
+    power: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v8"/><path d="M6.3 7.3a8 8 0 1 0 11.4 0"/></svg>',
+    clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M8 7h7"/></svg>',
   };
-  const tiles = MODEL.modules.map(m => {
-    const g = MODEL.guide[m] || {};
-    const n = MODEL.nodes.filter(x => x.module === m).length;
-    const e = MODEL.events.filter(x => x.module === m).length;
-    return `<a class="tile" href="#module-${slug(m)}" style="--h:${g.hue}"><span class="mg">${esc(g.mono)}</span><span class="tname">${esc(m)}</span><span class="ttag">${esc(g.tagline)}</span><span class="tcount">${n} nodes${e ? ` · ${e} events` : ''}</span></a>`;
+  const byId = new Map(MODEL.nodes.map(n => [n.id, n]));
+  // A step's args fill in its input boxes, like literals typed on the node (and unfold an advanced pin).
+  const withArgs = (n, args) => !args ? n : Object.assign({}, n, { inputs: n.inputs.map(p => p.n in args ? Object.assign({}, p, { d: args[p.n], adv: false }) : p) });
+  const graphHtml = steps => steps.map((s, i) => {
+    const last = i === steps.length - 1;
+    const wire = last ? '' : `<div class="wire" aria-hidden="true"><span>${esc(s.via || 'then')}</span><i></i></div>`;
+    return nodeHtml(s.node, true, last ? null : s.via) + wire;
   }).join('');
+  const firstSteps = [
+    { node: byId.get('USignInAnonymouslyProxy_SignInAnonymously'), via: 'OnSignedIn' },
+    { node: byId.get('USetFirestoreDocumentProxy_SetDocument') },
+  ];
+  const firstGraph = firstSteps.every(s => s.node) ? graphHtml([firstSteps[0], { node: withArgs(firstSteps[1].node, { DocumentPath: 'users/<uid>' }) }]) : '';
+  const check = (name, on) => `<div class="row"><span class="cbx${on ? ' on' : ''}"></span><span${on ? '' : ' class="dim"'}>${name}</span></div>`;
   parts.push(`<section class="module" id="start">
     <div class="hero">
       <h2>Firebase and Google Play in Blueprint</h2>
-      <p class="lede">${MODEL.nodes.length} nodes in ${MODEL.modules.length} modules, generated from the plugin's own headers.</p>
-      <ol class="howto">
-        <li><span class="hico">${SVG.file}</span><b>Add your Firebase config</b><span>google-services.json · GoogleService-Info.plist → Config/Firebase/</span></li>
-        <li><span class="hico">${SVG.toggle}</span><b>Keep the modules you use</b><span>Project Settings → Plugins → Firebase BP</span></li>
-        <li><span class="hico">${SVG.node}</span><b>Call the nodes</b><span>async nodes fire an exec output when the request ends</span></li>
+      <p class="lede">${MODEL.nodes.length} nodes in ${MODEL.modules.length} modules. Four steps to your first call:</p>
+      <ol class="steps">
+        <li class="step">
+          <h3>Create your Firebase app</h3>
+          <p>In the Firebase console, add an Android and/or iOS app with your game's package name, and download its config file.</p>
+          <div class="mock"><div class="bar"><i></i><i></i><i></i>console.firebase.google.com</div><div class="body">
+            <div class="dim">Project settings › Your apps</div>
+            <div class="row">${SVG.android}<span>com.studio.mygame</span><span class="btn">google-services.json</span></div>
+            <div class="row">${SVG.apple}<span>com.studio.mygame</span><span class="btn">GoogleService-Info.plist</span></div>
+          </div></div>
+        </li>
+        <li class="step">
+          <h3>Drop it in Config/Firebase</h3>
+          <p>One folder for both files, inside your project.</p>
+          <div class="mock"><div class="body">
+            <div class="row">${SVG.folder}<span>MyGame</span></div>
+            <div class="row" style="padding-left:14px">${SVG.folder}<span>Config</span></div>
+            <div class="row" style="padding-left:28px">${SVG.folder}<span class="file">Firebase</span></div>
+            <div class="row hl" style="padding-left:40px">${SVG.file}<span class="file">google-services.json</span><span class="tag">Android · Windows</span></div>
+            <div class="row hl" style="padding-left:40px">${SVG.file}<span class="file">GoogleService-Info.plist</span><span class="tag">iOS</span></div>
+          </div></div>
+        </li>
+        <li class="step">
+          <h3>Tick the modules you use</h3>
+          <p>The others stay out of your build.</p>
+          <div class="mock"><div class="bar">Project Settings › Plugins › Firebase BP</div><div class="body">
+            <div class="dim">Modules</div>
+            ${check('Enable Auth', true)}${check('Enable Firestore', true)}${check('Enable Analytics', true)}${check('Enable AdMob', false)}${check('Enable Billing', false)}
+          </div></div>
+        </li>
+        <li class="step">
+          <h3>Call a node</h3>
+          <p>Right-click in any Blueprint and type its name. Each module page starts with ready-made examples.</p>
+          <div class="mock graph-mock"><div class="graph">${firstGraph}</div></div>
+        </li>
       </ol>
-      <div class="tiles">${tiles}</div>
+      <div class="tips">
+        <div class="tip">${SVG.power}<span>Firebase starts on its own when the game launches.</span></div>
+        <div class="tip">${SVG.clock}<span>Clock nodes wait for an answer, then fire one of their exec outputs.</span></div>
+        <div class="tip">${SVG.book}<span>Pick a module in the menu: examples first, then every node.</span></div>
+      </div>
       <div class="legend" aria-label="Legend">
         <span><i style="background:var(--hd-async)"></i>Async (latent)</span>
         <span><i style="background:var(--hd-call)"></i>Callable</span>
@@ -515,7 +572,6 @@ function render() {
     </div>
   </section>`);
 
-  const byId = new Map(MODEL.nodes.map(n => [n.id, n]));
   for (const m of MODEL.modules) {
     const g = MODEL.guide[m] || {};
     const nodes = MODEL.nodes.filter(n => n.module === m);
@@ -528,14 +584,7 @@ function render() {
     let html = `<section class="module" id="${id}" style="--h:${g.hue}"><div class="module-head"><span class="mg">${esc(g.mono)}</span><h2>${esc(m)}</h2><span class="meta">${nodes.length} nodes${events.length ? ` · ${events.length} events` : ''}${types.length ? ` · ${types.length} types` : ''}</span>${g.tagline ? `<p class="tagline">${esc(g.tagline)}</p>` : ''}</div>`;
 
     for (const r of g.recipes || []) {
-      // A step's args fill in its input boxes, like literals typed on the node (and unfold an advanced pin).
-      const withArgs = (n, args) => !args ? n : Object.assign({}, n, { inputs: n.inputs.map(p => p.n in args ? Object.assign({}, p, { d: args[p.n], adv: false }) : p) });
-      const steps = r.steps.map(s => ({ node: withArgs(byId.get(s.id), s.args), via: s.via }));
-      const graph = steps.map((s, i) => {
-        const last = i === steps.length - 1;
-        const wire = last ? '' : `<div class="wire" aria-hidden="true"><span>${esc(s.via || 'then')}</span><i></i></div>`;
-        return nodeHtml(s.node, true, last ? null : s.via) + wire;
-      }).join('');
+      const graph = graphHtml(r.steps.map(s => ({ node: withArgs(byId.get(s.id), s.args), via: s.via })));
       html += `<div class="recipe"><div class="recipe-title">Quick start<span>${esc(r.title)}</span></div><div class="graph">${graph}</div></div>`;
     }
 
