@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FirebaseBP Node Reference</title>
+<title>FirePlay Node Reference</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
@@ -216,6 +216,7 @@ h3.group { margin: 6px 0 -4px; font: 600 13px var(--f-body); letter-spacing: 0.0
 .hero { display: grid; gap: 18px; }
 .hero h2 { margin: 0; font: 700 34px/1.1 var(--f-display); text-wrap: balance; }
 .hero .lede { margin: -8px 0 0; color: var(--ink-2); }
+.hero .tm { margin: 6px 0 0; color: var(--ink-3); font-size: 12px; }
 .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; counter-reset: step; }
 .step { counter-increment: step; display: grid; grid-template-rows: auto auto 1fr; gap: 6px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; min-width: 0; }
 .step h3 { display: flex; align-items: center; gap: 10px; margin: 0; font: 600 19px/1.2 var(--f-display); }
@@ -372,7 +373,7 @@ details.types > .cards { padding: 14px; }
 <div class="topbar">
   <div class="brand">
     <button type="button" class="menu-btn" id="menu-btn" aria-controls="rail-nav" aria-expanded="true" aria-label="Modules menu"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 5h14M3 10h14M3 15h14"/></svg></button>
-    <h1><a href="#start">Firebase<span>BP</span> Node Reference</a></h1><span class="ver" id="ver"></span>
+    <h1><a href="#start">Fire<span>Play</span> Node Reference</a></h1><span class="ver" id="ver"></span>
   </div>
   <div class="search">
     <input id="q" type="search" placeholder="Search nodes, pins, types… (e.g. rewarded, claims, snapshot)" autocomplete="off" aria-label="Search the reference">
@@ -520,8 +521,9 @@ function render() {
   const check = (name, on) => `<div class="row"><span class="cbx${on ? ' on' : ''}"></span><span${on ? '' : ' class="dim"'}>${name}</span></div>`;
   parts.push(`<section class="module" id="start">
     <div class="hero">
-      <h2>Firebase and Google Play in Blueprint</h2>
+      <h2>Firebase &amp; Google Play Suite for Blueprint</h2>
       <p class="lede">${MODEL.nodes.length} nodes in ${MODEL.modules.length} modules. Four steps to your first call:</p>
+      <p class="tm">FirePlay is listed as "Firebase BP" in the editor's Plugins and Project Settings. Not affiliated with Google: Firebase, Google Play and AdMob are trademarks of Google LLC.</p>
       <ol class="steps">
         <li class="step">
           <h3>Create your Firebase app</h3>
