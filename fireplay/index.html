@@ -217,6 +217,31 @@ h3.group { margin: 6px 0 -4px; font: 600 13px var(--f-body); letter-spacing: 0.0
 .hero h2 { margin: 0; font: 700 34px/1.1 var(--f-display); text-wrap: balance; }
 .hero .lede { margin: -8px 0 0; color: var(--ink-2); }
 .hero .tm { margin: 6px 0 0; color: var(--ink-3); font-size: 12px; }
+/* Setup guide: one card per chapter, numbered steps, setting paths in mono. */
+.guide { display: grid; gap: 14px; }
+.guide .intro { margin: 0; color: var(--ink-2); }
+.guide .toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.guide .toc a { display: inline-block; padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink-2); font-size: 13px; text-decoration: none; }
+.guide .toc a:hover { color: var(--ink); border-color: var(--accent); }
+.guide .ch { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; min-width: 0; scroll-margin-top: 90px; }
+.guide .ch h3 { margin: 0 0 4px; font: 600 20px/1.2 var(--f-display); }
+.guide .ch .why { margin: 0 0 10px; color: var(--ink-3); font-size: 13.5px; }
+.guide .ch h4 { margin: 14px 0 4px; font: 600 14px var(--f-body); color: var(--ink); }
+.guide ol, .guide ul { margin: 4px 0; padding-left: 22px; display: grid; gap: 6px; font-size: 14px; color: var(--ink-2); }
+.guide li { overflow-wrap: anywhere; }
+.guide b { color: var(--ink); font-weight: 600; }
+.guide .p { font: 500 12.5px var(--f-mono); color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); border-radius: 5px; padding: 1px 6px; }
+.guide pre { margin: 6px 0; padding: 10px 12px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px; font: 12.5px/1.5 var(--f-mono); color: var(--ink); overflow-x: auto; white-space: pre; }
+.guide .note { margin: 10px 0 0; padding: 8px 12px; border-left: 3px solid var(--accent); background: var(--surface-2); border-radius: 0 6px 6px 0; font-size: 13.5px; color: var(--ink-2); }
+.guide table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.guide th, .guide td { text-align: left; vertical-align: top; padding: 7px 8px; border-top: 1px solid var(--line); color: var(--ink-2); }
+.guide th { color: var(--ink); font-weight: 600; width: 28%; }
+.guide .tw { overflow-x: auto; }
+@media (max-width: 700px) {
+  .guide table, .guide tbody, .guide tr, .guide th, .guide td { display: block; width: auto; }
+  .guide th { padding-bottom: 2px; }
+  .guide td { border-top: none; padding-top: 0; }
+}
 .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; counter-reset: step; }
 .step { counter-increment: step; display: grid; grid-template-rows: auto auto 1fr; gap: 6px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; min-width: 0; }
 .step h3 { display: flex; align-items: center; gap: 10px; margin: 0; font: 600 19px/1.2 var(--f-display); }
@@ -492,9 +517,169 @@ function typeHtml(t) {
   </article>`;
 }
 
+// Setup guide page (#setup): everything outside Unreal that a game needs before the nodes work.
+const SETUP_GUIDE = `<section class="module" id="setup"><div class="module-head"><h2>Setup guide</h2><span class="meta">Firebase console · Google Play Console · AdMob · Android packaging</span></div>
+<div class="guide">
+  <p class="intro">From an empty Firebase project to a build on Google Play. Do the chapters you need: a game that only uses Auth and Firestore stops after chapter 4, and everything up to there also runs in the editor on Windows.</p>
+  <ul class="toc">
+    <li><a href="#setup-example">1 · Example project</a></li><li><a href="#setup-install">2 · Install</a></li><li><a href="#setup-firebase">3 · Firebase project</a></li>
+    <li><a href="#setup-products">4 · Firebase products</a></li><li><a href="#setup-signing">5 · Signing &amp; SHA-1</a></li><li><a href="#setup-play">6 · Play Console</a></li>
+    <li><a href="#setup-games">7 · Play Games</a></li><li><a href="#setup-billing">8 · Play Billing</a></li><li><a href="#setup-admob">9 · AdMob &amp; consent</a></li>
+    <li><a href="#setup-package">10 · Package for Android</a></li><li><a href="#setup-trouble">11 · Troubleshooting</a></li>
+  </ul>
+
+  <div class="ch" id="setup-example">
+    <h3>1 · Run the example project</h3>
+    <p class="why">The fastest way to see every module working. It is a Blueprint-only project with one screen per module and an event log showing each node's result.</p>
+    <ol>
+      <li>Install FirePlay (chapter 2), then open <span class="p">FirePlayExample.uproject</span>.</li>
+      <li>Create a Firebase project and an Android app with the package name <span class="p">com.yourcompany.fireplayexample</span> (chapter 3), or change it in <span class="p">Project Settings › Platforms › Android › Android Package Name</span>.</li>
+      <li>Drop your <span class="p">google-services.json</span> in <span class="p">Config/Firebase/</span>.</li>
+      <li>In the Firebase console, enable <b>Anonymous</b> sign-in and create Firestore, Realtime Database and Storage (chapter 4).</li>
+      <li>Publish the rules from <span class="p">Backend/</span>, and deploy the Cloud Functions if you want that screen too:</li>
+    </ol>
+<pre>cd Backend
+npm install --prefix functions
+firebase use --add            # pick your project
+firebase deploy --only firestore:rules,database,storage,functions</pre>
+    <ol start="6"><li>Press <b>Play</b>. Auth, Firestore, Realtime Database, Storage, Functions and Remote Config work in the editor. AdMob, Billing, Play Games, Cloud Messaging and in-app updates need an Android device (chapters 5 to 10).</li></ol>
+    <p class="note">The example's ads use Google's public test ad units (<span class="p">Content/Demo/Core/DT_DemoAdUnits</span>), so they work on a device right away. Replace them with your own units before release.</p>
+  </div>
+
+  <div class="ch" id="setup-install">
+    <h3>2 · Install FirePlay</h3>
+    <ol>
+      <li>In the Epic Games Launcher: <b>Fab Library › FirePlay › Install to Engine</b> (Unreal Engine 5.8).</li>
+      <li>In your project: <span class="p">Edit › Plugins</span>, search FirePlay, tick it, restart the editor.</li>
+      <li>Open <span class="p">Project Settings › Game › FirePlay</span> and untick the modules you don't use: they are left out of your Android and iOS builds.</li>
+    </ol>
+  </div>
+
+  <div class="ch" id="setup-firebase">
+    <h3>3 · Create the Firebase project</h3>
+    <p class="why">One Firebase project per game. Its config file tells FirePlay which project to talk to.</p>
+    <ol>
+      <li>Go to <b>console.firebase.google.com › Add project</b>. Google Analytics can stay on.</li>
+      <li><b>Add app › Android</b>. The package name must match <span class="p">Project Settings › Platforms › Android › Android Package Name</span> exactly, e.g. <span class="p">com.studio.mygame</span>. Add your SHA-1 now if you have it (chapter 5), or later.</li>
+      <li>Download <span class="p">google-services.json</span> and put it in <span class="p">YourProject/Config/Firebase/</span>. The same file is used on Android and on Windows (editor and desktop builds).</li>
+      <li>iOS (preview): <b>Add app › Apple</b> with the bundle ID from <span class="p">Project Settings › Platforms › iOS</span>, and put <span class="p">GoogleService-Info.plist</span> in the same folder.</li>
+    </ol>
+    <p class="note"><b>Download google-services.json again</b> each time you add a SHA certificate, enable Google sign-in or create the Realtime Database: the file then gains the OAuth clients and the database URL FirePlay needs.</p>
+  </div>
+
+  <div class="ch" id="setup-products">
+    <h3>4 · Turn on the Firebase products you use</h3>
+    <div class="tw"><table><tbody>
+      <tr><th>Authentication</th><td><b>Build › Authentication › Sign-in method</b>. Enable the providers you call: Anonymous, Email/Password, Google (also needed by Play Games sign-in), Phone (needs your SHA-1 and SHA-256), Apple (iOS). For <b>Play Games</b>, enable the Play Games provider and paste the Web client ID and secret from Google Cloud (chapter 7).</td></tr>
+      <tr><th>Firestore</th><td><b>Build › Firestore Database › Create database</b>, pick a location, then write your security rules. Calls fail with PermissionDenied until the rules allow them.</td></tr>
+      <tr><th>Realtime Database</th><td><b>Build › Realtime Database › Create database</b>, then download google-services.json again (it now holds the database URL) and set your rules.</td></tr>
+      <tr><th>Storage</th><td><b>Build › Storage › Get started</b> (new projects need the Blaze plan for the default bucket), then set your rules.</td></tr>
+      <tr><th>Cloud Functions</th><td>Needs the Blaze plan. Write and deploy your functions with the Firebase CLI; the Region pin of the call node must match the function's region.</td></tr>
+      <tr><th>Remote Config</th><td>Create parameters in <b>Run › Remote Config</b>, then Fetch And Activate in the game. Start Remote Config Realtime Updates to receive changes live.</td></tr>
+      <tr><th>Cloud Messaging</th><td>Nothing to enable. On Android 13+ call Request Notification Permission. Test with <b>Messaging › New campaign › Send test message</b> and the token from Get FCM Token.</td></tr>
+      <tr><th>Crashlytics</th><td>Open <b>Run › Crashlytics</b> once. A crash is reported at the next launch. Tick Upload Crashlytics Native Symbols in Project Settings for readable native stacks.</td></tr>
+      <tr><th>Analytics</th><td>On by default. To see events live in <b>DebugView</b>: <span class="p">adb shell setprop debug.firebase.analytics.app com.studio.mygame</span></td></tr>
+      <tr><th>App Check</th><td><b>Build › App Check › Apps</b>: register the Android app with <b>Play Integrity</b> (needs the SHA-256 of your app signing key, chapter 5). While developing, tick Use App Check Debug Provider In Development Builds, find the debug secret in logcat (search <span class="p">debugtokens:create</span>) and add it under <b>Manage debug tokens</b>. Turn on enforcement only once valid tokens arrive.</td></tr>
+    </tbody></table></div>
+  </div>
+
+  <div class="ch" id="setup-signing">
+    <h3>5 · Android signing and SHA certificates</h3>
+    <p class="why">Google sign-in, Play Games, Phone auth and App Check check which key signed your app. A missing fingerprint gives DEVELOPER_ERROR (code 10).</p>
+    <ol>
+      <li>Create a release key once, keep it safe (losing it means you can't update your game):</li>
+    </ol>
+<pre>keytool -genkeypair -v -keystore MyGame.keystore -alias mygame -keyalg RSA -keysize 2048 -validity 10000</pre>
+    <ol start="2">
+      <li>Put it in <span class="p">YourProject/Build/Android/</span> and fill <span class="p">Project Settings › Platforms › Android › Distribution Signing</span> (Key Store, Key Alias, passwords).</li>
+      <li>Read its fingerprints and add the <b>SHA-1</b> and <b>SHA-256</b> to the Android app in <b>Firebase › Project settings</b>:</li>
+    </ol>
+<pre>keytool -list -v -keystore Build/Android/MyGame.keystore -alias mygame</pre>
+    <ol start="4">
+      <li>Development builds are signed with the debug key: add its fingerprints too (<span class="p">%USERPROFILE%\\.android\\debug.keystore</span>, alias <span class="p">androiddebugkey</span>, password <span class="p">android</span>).</li>
+      <li>After your first upload to Google Play, Play re-signs the app: copy the <b>App signing key</b> SHA-1 and SHA-256 from <b>Play Console › Test and release › App integrity › App signing</b> into Firebase as well, then download google-services.json again.</li>
+    </ol>
+    <p class="note">Sign-in works from your PC but fails once installed from Google Play? The App signing key fingerprints (step 5) are missing.</p>
+  </div>
+
+  <div class="ch" id="setup-play">
+    <h3>6 · Google Play Console</h3>
+    <p class="why">Needed for Play Billing, Play Games, in-app updates and reviews, and App Check Play Integrity: these only work on builds installed from a Play track.</p>
+    <ol>
+      <li>Create a developer account at <b>play.google.com/console</b> (one-time fee), then <b>Create app</b>.</li>
+      <li><b>Test and release › Testing › Internal testing</b>: create a release and upload your <span class="p">.aab</span> (chapter 10).</li>
+      <li>Add your testers' Google accounts in the <b>Testers</b> tab, open the opt-in link on the phone, then install the game from the Play Store page it leads to.</li>
+      <li>Each new upload needs a higher <span class="p">Project Settings › Platforms › Android › Store Version</span>.</li>
+    </ol>
+    <p class="note">Google Play only accepts recent target API levels: keep Target SDK Version at the level Play currently requires (36 in the example project).</p>
+  </div>
+
+  <div class="ch" id="setup-games">
+    <h3>7 · Google Play Games Services</h3>
+    <ol>
+      <li><b>Play Console › Grow users › Play Games Services › Setup and management › Configuration</b>: create the Play Games Services project and link the <b>same Google Cloud project</b> as your Firebase project.</li>
+      <li><b>Credentials › Add credential › Android</b>: your package name and the SHA-1 of the app signing key (and of your upload or debug key for local builds).</li>
+      <li><b>Add credential › Game server</b>: pick the OAuth <b>Web client</b> that Firebase created. FirePlay signs in to Firebase with it, so Google sign-in must be enabled in Firebase Authentication.</li>
+      <li>In Firebase Authentication, enable the <b>Play Games</b> provider with that Web client's ID and secret (Google Cloud console › APIs &amp; Services › Credentials).</li>
+      <li>Copy the <b>Games App ID</b> (the number at the top of the Configuration page) into <span class="p">Project Settings › Platforms › Android › Google Play Services</span>, with <b>Enable Google Play Support</b> ticked.</li>
+      <li>Create your achievements, leaderboards and events. Put their IDs (they start with <span class="p">CgkI</span>) in an ID Table: on any Play Games node, press <b>+</b> next to the ID Table pin to create one, add a row per ID with the Android column filled, then pick rows from the drop-down.</li>
+      <li>Add your tester accounts under <b>Play Games Services › Testers</b>, and <b>Publish</b> the configuration when you release.</li>
+    </ol>
+  </div>
+
+  <div class="ch" id="setup-billing">
+    <h3>8 · Google Play Billing</h3>
+    <ol>
+      <li>Upload one build to a test track first: Play only shows the product pages once an app with the billing permission exists (FirePlay adds it).</li>
+      <li><b>Monetize with Play › Products</b>: create one-time products (coins, remove ads) and subscriptions with their base plans. Activate them. The product IDs are what you pass to Query Product Details and Purchase Product.</li>
+      <li><b>Play Console › Settings › License testing</b>: add your testers' accounts. Their purchases are free test purchases.</li>
+      <li>In the game, bind OnPurchasesUpdated and call Restore Purchases at launch. Consumables are consumed for you unless you untick Auto Consume Consumables.</li>
+    </ol>
+  </div>
+
+  <div class="ch" id="setup-admob">
+    <h3>9 · AdMob and consent (UMP)</h3>
+    <ol>
+      <li><b>admob.google.com › Apps › Add app</b> (Android). Copy the app ID (<span class="p">ca-app-pub-…~…</span>) into <span class="p">Project Settings › Game › FirePlay › AdMob Android App Id</span>. The default is Google's sample app ID, which only serves test ads.</li>
+      <li><b>Ad units › Add ad unit</b> for each format you show. Put the unit IDs in an ID Table (press <b>+</b> next to the ID Table pin of any AdMob node), one row per placement, and pick the row on the node.</li>
+      <li>Testing: use Google's test ad units, or add your phone to AdMob Test Device Ids (its ID is printed in logcat on the first ad request). Never tap your own live ads.</li>
+      <li><b>Privacy &amp; messaging</b>: create a GDPR message (and US states if needed). At launch call Request Consent Info Update, then check Can Request Ads before loading ads; offer Show Privacy Options Form in your settings menu when Is Privacy Options Required is true.</li>
+      <li>Before release, add <span class="p">app-ads.txt</span> to your developer website as AdMob asks.</li>
+    </ol>
+    <p class="note">New ad units can take a few hours before serving real ads (error NoFill). Test ads work immediately.</p>
+  </div>
+
+  <div class="ch" id="setup-package">
+    <h3>10 · Package for Android</h3>
+    <ol>
+      <li><span class="p">Project Settings › Platforms › Android</span>: package name, Minimum SDK 26, Target SDK as Play requires, Store Version (increase it for every upload), Distribution Signing (chapter 5). Click <b>Configure Now</b> if the project isn't set up for Android yet.</li>
+      <li>Keep <b>Generate bundle (AAB)</b> on: Google Play wants an <span class="p">.aab</span>.</li>
+      <li><span class="p">Platforms › Android › Package Project</span> with the <b>Shipping</b> configuration and <b>For Distribution</b> ticked in <span class="p">Project Settings › Packaging</span>. Without For Distribution the build is signed with the debug key and Play rejects it.</li>
+      <li>Upload the <span class="p">.aab</span> to the internal testing track (chapter 6) and install it from the Play Store link.</li>
+    </ol>
+  </div>
+
+  <div class="ch" id="setup-trouble">
+    <h3>11 · Troubleshooting</h3>
+    <div class="tw"><table><tbody>
+      <tr><th>Firebase isn't initialized</th><td><span class="p">google-services.json</span> missing from <span class="p">Config/Firebase</span>, or its package name differs from the one in Project Settings.</td></tr>
+      <tr><th>Google / Play Games sign-in: DEVELOPER_ERROR (10)</th><td>A SHA-1 is missing (often the Play App signing key), or google-services.json has no Web client: enable Google sign-in in Firebase and download the file again.</td></tr>
+      <tr><th>Play Games calls fail with DeveloperError</th><td>Games App ID or Enable Google Play Support missing (chapter 7), your account isn't a tester, or the ID Table row has no Android ID.</td></tr>
+      <tr><th>Billing: ItemUnavailable / BillingUnavailable</th><td>The game wasn't installed from a Play track, the product isn't active, or the account isn't a license tester.</td></tr>
+      <tr><th>Ads: NoFill</th><td>Normal for brand-new ad units or test devices with real units. Try Google's test ad units.</td></tr>
+      <tr><th>Firestore / Database / Storage: PermissionDenied</th><td>Your security rules refuse the call, or no player is signed in yet.</td></tr>
+      <tr><th>Functions: NotFound or Unauthenticated</th><td>Wrong function name or region, or App Check is enforced while the build sends no valid token.</td></tr>
+      <tr><th>No notification shown</th><td>Android 13+ needs Request Notification Permission; while the game is in the foreground, notifications arrive on OnFCMMessageReceived instead.</td></tr>
+    </tbody></table></div>
+    <p class="note">Every FirePlay failure also logs a line starting with <span class="p">LogFirePlay</span>: check the Output Log in the editor, or <span class="p">adb logcat</span> on a device.</p>
+  </div>
+</div>
+</section>`;
+
 function render() {
   document.getElementById('ver').textContent = `${MODEL.nodes.length} nodes · ${MODEL.events.length} events · generated ${MODEL.generated}`;
-  const rail = [`<li><a href="#start"><span class="lbl"><span class="mg sm home">✦</span>Getting started</span></a></li>`];
+  const rail = [`<li><a href="#start"><span class="lbl"><span class="mg sm home">✦</span>Getting started</span></a></li>`,
+    `<li><a href="#setup"><span class="lbl"><span class="mg sm" style="--h:28">☰</span>Setup guide</span></a></li>`, `<li class="sep" aria-hidden="true"></li>`];
   const parts = [];
   const SVG = {
     folder: '<svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 6h7l2 2h9v11H3z"/></svg>',
@@ -563,6 +748,7 @@ function render() {
         <div class="tip">${SVG.power}<span>Firebase starts on its own when the game launches.</span></div>
         <div class="tip">${SVG.clock}<span>Clock nodes wait for an answer, then fire one of their exec outputs.</span></div>
         <div class="tip">${SVG.book}<span>Pick a module in the menu: examples first, then every node.</span></div>
+        <div class="tip">${SVG.book}<span>First time with Firebase or Google Play? Follow the <a href="#setup">Setup guide</a>.</span></div>
       </div>
       <div class="legend" aria-label="Legend">
         <span><i style="background:var(--hd-async)"></i>Async (latent)</span>
@@ -573,6 +759,7 @@ function render() {
       </div>
     </div>
   </section>`);
+  parts.push(SETUP_GUIDE);
 
   for (const m of MODEL.modules) {
     const g = MODEL.guide[m] || {};
