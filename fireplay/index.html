@@ -217,36 +217,55 @@ h3.group { margin: 6px 0 -4px; font: 600 13px var(--f-body); letter-spacing: 0.0
 .hero h2 { margin: 0; font: 700 34px/1.1 var(--f-display); text-wrap: balance; }
 .hero .lede { margin: -8px 0 0; color: var(--ink-2); }
 .hero .tm { margin: 6px 0 0; color: var(--ink-3); font-size: 12px; }
-/* Setup guide: one card per chapter, numbered steps, setting paths in mono. */
-.guide { display: grid; gap: 14px; }
-.guide .intro { margin: 0; color: var(--ink-2); }
-.guide .toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
-.guide .toc a { display: inline-block; padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink-2); font-size: 13px; text-decoration: none; }
-.guide .toc a:hover { color: var(--ink); border-color: var(--accent); }
-.guide .ch { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; min-width: 0; scroll-margin-top: 90px; }
-.guide .ch h3 { margin: 0 0 4px; font: 600 20px/1.2 var(--f-display); }
-.guide .ch .why { margin: 0 0 10px; color: var(--ink-3); font-size: 13.5px; }
-.guide .ch h4 { margin: 14px 0 4px; font: 600 14px var(--f-body); color: var(--ink); }
-.guide ol, .guide ul { margin: 4px 0; padding-left: 22px; display: grid; gap: 6px; font-size: 14px; color: var(--ink-2); }
-.guide li { overflow-wrap: anywhere; }
+/* Setup guide: a card per chapter; numbered steps with their screenshot beside them (below on phones). */
+.guide { display: grid; gap: 16px; }
+.guide .intro { margin: 0; color: var(--ink-2); max-width: 70ch; }
+.guide .toc { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
+.guide .toc a { display: grid; grid-template-columns: 26px 1fr; column-gap: 10px; align-items: center; padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); text-decoration: none; height: 100%; }
+.guide .toc a:hover { border-color: var(--accent); }
+.guide .toc .n, .guide .ch-n { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--line); font: 600 12.5px var(--f-mono); color: var(--accent); }
+.guide .toc b { font-size: 13.5px; color: var(--ink); }
+.guide .toc small { grid-column: 2; font-size: 12px; color: var(--ink-3); }
+.guide .ch { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px 20px 20px; min-width: 0; scroll-margin-top: 90px; }
+.guide .ch-head { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: start; margin-bottom: 14px; }
+.guide .ch-head .ch-n { width: 32px; height: 32px; font-size: 14px; background: var(--accent); color: #16110b; border: none; }
+.guide .ch h3 { margin: 3px 0 2px; font: 600 20px/1.2 var(--f-display); }
+.guide .ch .why { margin: 0; color: var(--ink-3); font-size: 13.5px; max-width: 75ch; }
+.guide .tag { padding: 3px 9px; border: 1px solid var(--line); border-radius: 999px; font-size: 12px; color: var(--ink-3); white-space: nowrap; margin-top: 4px; }
+.guide .sub { border-top: 1px solid var(--line); margin-top: 18px; padding-top: 14px; }
+.guide .ch-head + .sub { border-top: none; margin-top: 0; padding-top: 0; }
+.guide h4 { margin: 0 0 10px; font: 600 15.5px var(--f-display); color: var(--ink); }
+.guide h4 small { font: 400 12.5px var(--f-body); color: var(--ink-3); margin-left: 6px; }
+.guide .gs { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; counter-reset: gs; }
+.guide .gs > li { counter-increment: gs; display: grid; grid-template-columns: 24px minmax(0, 1fr); column-gap: 12px; row-gap: 8px; align-items: start; font-size: 14px; color: var(--ink-2); overflow-wrap: anywhere; }
+.guide .gs > li::before { content: counter(gs); display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface-2); font: 600 12px var(--f-mono); color: var(--ink); }
+.guide .gs > li > div { min-width: 0; padding-top: 2px; }
+.guide .gs > li.img { grid-template-columns: 24px minmax(0, 5fr) minmax(0, 7fr); }
+.guide .gs > li > figure { grid-column: 3; }
+.guide .gs pre { margin: 8px 0 0; }
 .guide b { color: var(--ink); font-weight: 600; }
 .guide .p { font: 500 12.5px var(--f-mono); color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); border-radius: 5px; padding: 1px 6px; }
 .guide pre { margin: 6px 0; padding: 10px 12px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px; font: 12.5px/1.5 var(--f-mono); color: var(--ink); overflow-x: auto; white-space: pre; }
-.guide .note { margin: 10px 0 0; padding: 8px 12px; border-left: 3px solid var(--accent); background: var(--surface-2); border-radius: 0 6px 6px 0; font-size: 13.5px; color: var(--ink-2); }
-.guide table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
-.guide th, .guide td { text-align: left; vertical-align: top; padding: 7px 8px; border-top: 1px solid var(--line); color: var(--ink-2); }
-.guide th { color: var(--ink); font-weight: 600; width: 28%; }
-.guide .tw { overflow-x: auto; }
-.guide .shots { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin: 12px 0 4px; }
+.guide .note { margin: 14px 0 0; padding: 9px 12px; border-left: 3px solid var(--accent); background: var(--surface-2); border-radius: 0 6px 6px 0; font-size: 13.5px; color: var(--ink-2); }
+.guide .note.warn { border-left-color: #e5534b; }
 .guide figure { margin: 0; min-width: 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface-2); }
 .guide figure a { display: block; cursor: zoom-in; }
 .guide figure img { display: block; width: 100%; height: auto; }
-.guide figcaption { padding: 7px 10px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--ink-3); }
-.guide figcaption b { color: var(--ink-2); }
-@media (max-width: 700px) {
-  .guide table, .guide tbody, .guide tr, .guide th, .guide td { display: block; width: auto; }
-  .guide th { padding-bottom: 2px; }
-  .guide td { border-top: none; padding-top: 0; }
+.guide .mini { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 10px; }
+.guide .mini > div { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 13.5px; color: var(--ink-2); background: var(--surface-2); }
+.guide .mini > div > b:first-child { display: block; margin-bottom: 3px; font-size: 14px; }
+.guide details { border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); }
+.guide details + details { margin-top: 8px; }
+.guide summary { cursor: pointer; padding: 10px 12px; font-size: 14px; font-weight: 600; color: var(--ink); }
+.guide details p { margin: 0; padding: 0 12px 12px; font-size: 13.5px; color: var(--ink-2); }
+@media (max-width: 860px) {
+  .guide .gs > li.img { grid-template-columns: 24px minmax(0, 1fr); }
+  .guide .gs > li > figure { grid-column: 2; }
+}
+@media (max-width: 560px) {
+  .guide .ch { padding: 14px; }
+  .guide .ch-head { grid-template-columns: auto 1fr; }
+  .guide .ch-head .tag { grid-column: 2; justify-self: start; margin-top: 0; }
 }
 .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; counter-reset: step; }
 .step { counter-increment: step; display: grid; grid-template-rows: auto auto 1fr; gap: 6px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; min-width: 0; }
@@ -525,204 +544,197 @@ function typeHtml(t) {
 
 // Setup guide page (#setup): everything outside Unreal that a game needs before the nodes work.
 // Screenshots come from Tools/Site/guide (made by Marketing/Guide/compose); click one to open it full size.
-const shot = (name, w, h, caption) => `<figure><a href="guide/${name}.png" target="_blank" rel="noopener"><img src="guide/${name}.png" width="${w}" height="${h}" loading="lazy" decoding="async" alt="${caption.replace(/<[^>]+>/g, '')}"></a><figcaption>${caption}</figcaption></figure>`;
-const SETUP_GUIDE =`<section class="module" id="setup"><div class="module-head"><h2>Setup guide</h2><span class="meta">Firebase console · Google Play Console · AdMob · Android packaging</span></div>
+const SHOT_SIZE = {
+  'fb-create-project': [800, 500], 'fb-dashboard': [800, 300], 'fb-register-android': [800, 390], 'fb-download-json': [800, 370],
+  'fb-project-settings': [800, 520], 'fb-auth-anonymous': [800, 500], 'fb-auth-google': [800, 626], 'fb-auth-google-config': [800, 626],
+  'fb-firestore-mode': [800, 330], 'fb-firestore-rules': [800, 626], 'fb-rtdb-mode': [540, 430], 'fb-rtdb-url': [800, 280],
+  'fb-storage-blaze': [800, 330], 'pc-create-app': [800, 520], 'pc-game-free': [800, 420], 'pc-declarations': [800, 350],
+  'pc-internal-testing': [800, 470], 'pc-testers': [800, 490], 'pg-cloud-project': [800, 370], 'pg-configuration': [800, 520],
+  'pg-credential-android': [800, 546], 'pg-credential-oauth': [800, 230], 'am-add-app': [680, 280], 'am-formats': [580, 526],
+  'am-unit-created': [540, 430],
+};
+const shot = (name, alt) => `<figure><a href="guide/${name}.png" target="_blank" rel="noopener" title="Open full size"><img src="guide/${name}.png" width="${SHOT_SIZE[name][0]}" height="${SHOT_SIZE[name][1]}" loading="lazy" decoding="async" alt="${alt}"></a></figure>`;
+// One numbered step; with a screenshot it sits beside the text (below it on narrow screens).
+const st = (html, name, alt) => name ? `<li class="img"><div>${html}</div>${shot(name, alt)}</li>` : `<li><div>${html}</div></li>`;
+const chHead = (n, title, why, tag) => `<div class="ch-head"><span class="ch-n">${n}</span><div><h3>${title}</h3>${why ? `<p class="why">${why}</p>` : ''}</div>${tag ? `<span class="tag">${tag}</span>` : ''}</div>`;
+const SETUP_TOC = [
+  ['setup-example', 'Example project', 'See every module run'], ['setup-install', 'Install', 'Every game'],
+  ['setup-firebase', 'Firebase project', 'Every game'], ['setup-products', 'Firebase products', 'Auth, databases, Storage…'],
+  ['setup-signing', 'Signing & SHA-1', 'Android sign-in, App Check'], ['setup-play', 'Play Console', 'Billing, Play Games, updates'],
+  ['setup-games', 'Play Games', 'Achievements, leaderboards'], ['setup-billing', 'Play Billing', 'In-app purchases'],
+  ['setup-admob', 'AdMob & consent', 'Ads'], ['setup-package', 'Package for Android', 'Building the .aab'],
+  ['setup-trouble', 'Troubleshooting', 'Common errors'],
+];
+const SETUP_GUIDE = `<section class="module" id="setup"><div class="module-head"><h2>Setup guide</h2><span class="meta">Firebase console · Google Play Console · AdMob · Android packaging</span></div>
 <div class="guide">
-  <p class="intro">From an empty Firebase project to a build on Google Play. Do the chapters you need: a game that only uses Auth and Firestore stops after chapter 4, and everything up to there also runs in the editor on Windows.</p>
-  <ul class="toc">
-    <li><a href="#setup-example">1 · Example project</a></li><li><a href="#setup-install">2 · Install</a></li><li><a href="#setup-firebase">3 · Firebase project</a></li>
-    <li><a href="#setup-products">4 · Firebase products</a></li><li><a href="#setup-signing">5 · Signing &amp; SHA-1</a></li><li><a href="#setup-play">6 · Play Console</a></li>
-    <li><a href="#setup-games">7 · Play Games</a></li><li><a href="#setup-billing">8 · Play Billing</a></li><li><a href="#setup-admob">9 · AdMob &amp; consent</a></li>
-    <li><a href="#setup-package">10 · Package for Android</a></li><li><a href="#setup-trouble">11 · Troubleshooting</a></li>
-  </ul>
+  <p class="intro">From an empty Firebase project to a build on Google Play. Do only the chapters your game needs: a game that uses Auth and Firestore stops after chapter 4, and everything up to there also runs in the editor on Windows.</p>
+  <ul class="toc">${SETUP_TOC.map(([id, t, s], i) => `<li><a href="#${id}"><span class="n">${i + 1}</span><b>${t.replace('&', '&amp;')}</b><small>${s}</small></a></li>`).join('')}</ul>
 
   <div class="ch" id="setup-example">
-    <h3>1 · Run the example project</h3>
-    <p class="why">The fastest way to see every module working. It is a Blueprint-only project with one screen per module and an event log showing each node's result.</p>
-    <ol>
-      <li>Install FirePlay (chapter 2), then open <span class="p">FirePlayExample.uproject</span>.</li>
-      <li>Create a Firebase project and an Android app with the package name <span class="p">com.yourcompany.fireplayexample</span> (chapter 3), or change it in <span class="p">Project Settings › Platforms › Android › Android Package Name</span>.</li>
-      <li>Drop your <span class="p">google-services.json</span> in <span class="p">Config/Firebase/</span>.</li>
-      <li>In the Firebase console, enable <b>Anonymous</b> sign-in and create Firestore, Realtime Database and Storage (chapter 4).</li>
-      <li>Publish the rules from <span class="p">Backend/</span>, and deploy the Cloud Functions if you want that screen too:</li>
-    </ol>
-<pre>cd Backend
+    ${chHead(1, 'Run the example project', 'A Blueprint-only project with one screen per module and an event log showing each node’s result.', '10 min')}
+    <ol class="gs">
+      ${st(`Install FirePlay (chapter 2), then open <span class="p">FirePlayExample.uproject</span>.`)}
+      ${st(`Create a Firebase project and an Android app with the package name <span class="p">com.yourcompany.fireplayexample</span> (chapter 3), or change it in <span class="p">Project Settings › Platforms › Android › Android Package Name</span>.`)}
+      ${st(`Drop your <span class="p">google-services.json</span> in <span class="p">Config/Firebase/</span>.`)}
+      ${st(`Enable <b>Anonymous</b> sign-in and create Firestore, Realtime Database and Storage (chapter 4).`)}
+      ${st(`Publish the rules from <span class="p">Backend/</span>, and deploy the Cloud Functions if you want that screen too:<pre>cd Backend
 npm install --prefix functions
 firebase use --add            # pick your project
-firebase deploy --only firestore:rules,database,storage,functions</pre>
-    <ol start="6"><li>Press <b>Play</b>. Auth, Firestore, Realtime Database, Storage, Functions and Remote Config work in the editor. AdMob, Billing, Play Games, Cloud Messaging and in-app updates need an Android device (chapters 5 to 10).</li></ol>
-    <p class="note">The example's ads use Google's public test ad units (<span class="p">Content/Demo/Core/DT_DemoAdUnits</span>), so they work on a device right away. Replace them with your own units before release.</p>
+firebase deploy --only firestore:rules,database,storage,functions</pre>`)}
+      ${st(`Press <b>Play</b>. Auth, Firestore, Realtime Database, Storage, Functions and Remote Config work in the editor. AdMob, Billing, Play Games, Cloud Messaging and in-app updates need an Android device (chapters 5 to 10).`)}
+    </ol>
+    <p class="note">The example’s ads use Google’s public test ad units (<span class="p">Content/Demo/Core/DT_DemoAdUnits</span>), so they work on a device right away. Replace them with your own units before release.</p>
   </div>
 
   <div class="ch" id="setup-install">
-    <h3>2 · Install FirePlay</h3>
-    <ol>
-      <li>In the Epic Games Launcher: <b>Fab Library › FirePlay › Install to Engine</b> (Unreal Engine 5.8).</li>
-      <li>In your project: <span class="p">Edit › Plugins</span>, search FirePlay, tick it, restart the editor.</li>
-      <li>Open <span class="p">Project Settings › Game › FirePlay</span> and untick the modules you don't use: they are left out of your Android and iOS builds.</li>
+    ${chHead(2, 'Install FirePlay', '', '2 min')}
+    <ol class="gs">
+      ${st(`In the Epic Games Launcher: <b>Fab Library › FirePlay › Install to Engine</b> (Unreal Engine 5.8).`)}
+      ${st(`In your project: <span class="p">Edit › Plugins</span>, search FirePlay, tick it, restart the editor.`)}
+      ${st(`Open <span class="p">Project Settings › Game › FirePlay</span> and untick the modules you don’t use: they are left out of your Android and iOS builds.`)}
     </ol>
   </div>
 
   <div class="ch" id="setup-firebase">
-    <h3>3 · Create the Firebase project</h3>
-    <p class="why">One Firebase project per game. Its config file tells FirePlay which project to talk to.</p>
-    <ol>
-      <li>Go to <b>console.firebase.google.com › Create a new Firebase project</b> and name it. Google Analytics can stay on, with the default account.</li>
-      <li>On the project page, <b>+ Add app › Android</b>. The package name must match <span class="p">Project Settings › Platforms › Android › Android Package Name</span> exactly, e.g. <span class="p">com.studio.mygame</span>. The nickname is only for you.</li>
-      <li>Download <span class="p">google-services.json</span> and put it in <span class="p">YourProject/Config/Firebase/</span>. The same file is used on Android and on Windows (editor and desktop builds). Skip the Android Studio and SDK steps of the wizard: FirePlay does them.</li>
-      <li>Your SHA certificates (chapter 5) and later copies of the file are in <b>Settings › Project settings › General › Your apps</b>.</li>
-      <li>iOS (preview): <b>Add app › Apple</b> with the bundle ID from <span class="p">Project Settings › Platforms › iOS</span>, and put <span class="p">GoogleService-Info.plist</span> in the same folder.</li>
+    ${chHead(3, 'Create the Firebase project', 'One Firebase project per game. Its config file tells FirePlay which project to talk to.', '5 min')}
+    <ol class="gs">
+      ${st(`On <b>console.firebase.google.com</b>, <b>Create a new Firebase project</b> and name it. Google Analytics can stay on, with the default account.`, 'fb-create-project', 'Create a project: project name and generated project ID')}
+      ${st(`On the project page, click <b>+ Add app</b>, then the <b>Android</b> icon.`, 'fb-dashboard', 'The new project page with the Add app button')}
+      ${st(`Enter the package name. It must match <span class="p">Project Settings › Platforms › Android › Android Package Name</span> exactly, e.g. <span class="p">com.studio.mygame</span>. The nickname is only for you. <b>Register app</b>.`, 'fb-register-android', 'Register app: Android package name and nickname')}
+      ${st(`<b>Download google-services.json</b> and put it in <span class="p">YourProject/Config/Firebase/</span>. The same file is used on Android and on Windows. Skip the Android Studio and SDK steps that follow: FirePlay does them.`, 'fb-download-json', 'Download google-services.json')}
+      ${st(`Later, your SHA certificates (chapter 5) and fresh copies of the file are in <b>Settings › Project settings › General › Your apps</b>.`, 'fb-project-settings', 'Project settings: Add fingerprint and google-services.json')}
+      ${st(`iOS (preview): <b>Add app › Apple</b> with the bundle ID from <span class="p">Project Settings › Platforms › iOS</span>, and put <span class="p">GoogleService-Info.plist</span> in the same folder.`)}
     </ol>
-    <div class="shots">
-      ${shot('fb-create-project', 800, 500, '<b>Create a project</b>: the project ID under the name is generated for you.')}
-      ${shot('fb-dashboard', 800, 300, 'The new project: <b>+ Add app</b>, then the Android icon.')}
-      ${shot('fb-register-android', 800, 390, '<b>Register app</b> with your Android package name.')}
-      ${shot('fb-download-json', 800, 370, 'Download <b>google-services.json</b> into Config/Firebase.')}
-      ${shot('fb-project-settings', 800, 520, '<b>Project settings › Your apps</b>: Add fingerprint, and the latest google-services.json.')}
-    </div>
     <p class="note"><b>Download google-services.json again</b> each time you add a SHA certificate, enable Google sign-in or create the Realtime Database: the file then gains the OAuth clients and the database URL FirePlay needs.</p>
   </div>
 
   <div class="ch" id="setup-products">
-    <h3>4 · Turn on the Firebase products you use</h3>
-    <div class="tw"><table><tbody>
-      <tr><th>Authentication</th><td><b>Authentication › Get started › Sign-in method</b>. Enable the providers you call: Anonymous, Email/Password, Google (also needed by Play Games sign-in), Phone (needs your SHA-1 and SHA-256), Apple (iOS). For <b>Play Games</b>, enable the Play Games provider and paste the Web client ID and secret from Google Cloud (chapter 7).</td></tr>
-      <tr><th>Firestore</th><td><b>Databases &amp; Storage › Firestore › Create database</b>: Standard edition, pick a location (it can't be changed later), start in <b>production mode</b>, then replace the rules in the <b>Rules</b> tab and <b>Publish</b>. Calls fail with PermissionDenied until the rules allow them.</td></tr>
-      <tr><th>Realtime Database</th><td><b>Databases &amp; Storage › Realtime Database › Create Database</b> in <b>locked mode</b>, set your rules in the <b>Rules</b> tab, then download google-services.json again: it now holds the database URL shown on the Data tab.</td></tr>
-      <tr><th>Storage</th><td><b>Databases &amp; Storage › Storage</b>. New projects must upgrade to the <b>Blaze</b> (pay as you go) plan before the default bucket can be created; the no-cost quota still applies. Then set your rules.</td></tr>
-      <tr><th>Cloud Functions</th><td>Needs the Blaze plan. Write and deploy your functions with the Firebase CLI; the Region pin of the call node must match the function's region.</td></tr>
-      <tr><th>Remote Config</th><td>Create parameters in <b>Remote Config</b>, then Fetch And Activate in the game. Start Remote Config Realtime Updates to receive changes live.</td></tr>
-      <tr><th>Cloud Messaging</th><td>Nothing to enable. On Android 13+ call Request Notification Permission. Test with <b>Messaging › New campaign › Send test message</b> and the token from Get FCM Token.</td></tr>
-      <tr><th>Crashlytics</th><td>Open <b>Crashlytics</b> once. A crash is reported at the next launch. Tick Upload Crashlytics Native Symbols in Project Settings for readable native stacks.</td></tr>
-      <tr><th>Analytics</th><td>On by default. To see events live in <b>DebugView</b>: <span class="p">adb shell setprop debug.firebase.analytics.app com.studio.mygame</span></td></tr>
-      <tr><th>App Check</th><td><b>Security › App Check › Apps</b>: register the Android app with <b>Play Integrity</b> (needs the SHA-256 of your app signing key, chapter 5). While developing, tick Use App Check Debug Provider In Development Builds, find the debug secret in logcat (search <span class="p">debugtokens:create</span>) and add it under <b>Manage debug tokens</b>. Turn on enforcement only once valid tokens arrive.</td></tr>
-    </tbody></table></div>
-    <h4>Authentication</h4>
-    <div class="shots">
-      ${shot('fb-auth-anonymous', 800, 500, '<b>Sign-in method › Anonymous</b>: Enable, then Save.')}
-      ${shot('fb-auth-google', 800, 626, '<b>Google</b>: Enable, set the public name and the support email.')}
-      ${shot('fb-auth-google-config', 800, 626, 'After enabling Google: add your SHA-1 and download google-services.json again.')}
+    ${chHead(4, 'Turn on the Firebase products you use', 'Each product is off until you open it once in the console. Skip the ones your game doesn’t call.', '')}
+    <div class="sub">
+      <h4>Authentication</h4>
+      <ol class="gs">
+        ${st(`<b>Authentication › Get started › Sign-in method</b>. Pick a provider, switch <b>Enable</b> on, <b>Save</b>. Anonymous needs nothing else.`, 'fb-auth-anonymous', 'Anonymous provider enabled')}
+        ${st(`<b>Google</b> (also needed by Play Games sign-in): set the public name and the support email, then Save.`, 'fb-auth-google', 'Google provider with public name and support email')}
+        ${st(`Firebase then reminds you to add your <b>SHA-1</b> (chapter 5) and download google-services.json again.`, 'fb-auth-google-config', 'Reminder to add the SHA-1 and download the config file again')}
+        ${st(`Others: Email/Password, Phone (needs your SHA-1 and SHA-256), Apple (iOS). For <b>Play Games</b>, enable that provider with the Web client ID and secret from Google Cloud (chapter 7).`)}
+      </ol>
     </div>
-    <h4>Firestore and Realtime Database</h4>
-    <div class="shots">
-      ${shot('fb-firestore-mode', 800, 330, 'Firestore: start in <b>production mode</b>, your rules come next.')}
-      ${shot('fb-firestore-rules', 800, 626, "Firestore <b>Rules</b> tab: paste your rules (here the example's <span class='p'>Backend/firestore.rules</span>), then <b>Publish</b>.")}
-      ${shot('fb-rtdb-mode', 540, 430, 'Realtime Database: <b>locked mode</b>, then set your rules.')}
-      ${shot('fb-rtdb-url', 800, 280, 'The database URL. It goes into google-services.json once you download it again.')}
+    <div class="sub">
+      <h4>Firestore</h4>
+      <ol class="gs">
+        ${st(`<b>Databases &amp; Storage › Firestore › Create database</b>: Standard edition, pick a location (it can’t be changed later), and start in <b>production mode</b>.`, 'fb-firestore-mode', 'Firestore created in production mode')}
+        ${st(`In the <b>Rules</b> tab, paste your rules (the example’s are in <span class="p">Backend/firestore.rules</span>) and <b>Publish</b>. Calls fail with PermissionDenied until the rules allow them.`, 'fb-firestore-rules', 'Firestore Rules tab with the example rules')}
+      </ol>
     </div>
-    <h4>Storage</h4>
-    <div class="shots">
-      ${shot('fb-storage-blaze', 800, 330, 'Storage asks for the <b>Blaze</b> plan on new projects.')}
+    <div class="sub">
+      <h4>Realtime Database</h4>
+      <ol class="gs">
+        ${st(`<b>Databases &amp; Storage › Realtime Database › Create Database</b>, in <b>locked mode</b>. Then set your rules in the <b>Rules</b> tab.`, 'fb-rtdb-mode', 'Realtime Database created in locked mode')}
+        ${st(`The Data tab shows the database URL. Download google-services.json again so the file holds it.`, 'fb-rtdb-url', 'The Realtime Database URL')}
+      </ol>
+    </div>
+    <div class="sub">
+      <h4>Storage <small>needs the Blaze plan</small></h4>
+      <ol class="gs">
+        ${st(`<b>Databases &amp; Storage › Storage</b>. New projects must upgrade to <b>Blaze</b> (pay as you go) before the default bucket can be created; the no-cost quota still applies. Then set your rules.`, 'fb-storage-blaze', 'Storage asks to upgrade the project')}
+      </ol>
+    </div>
+    <div class="sub">
+      <h4>The other products</h4>
+      <div class="mini">
+        <div><b>Cloud Functions</b>Blaze plan. Write and deploy your functions with the Firebase CLI; the node’s Region pin must match the function’s region.</div>
+        <div><b>Remote Config</b>Create parameters in <b>Remote Config</b>, then Fetch And Activate in the game. Start Remote Config Realtime Updates to receive changes live.</div>
+        <div><b>Cloud Messaging</b>Nothing to enable. On Android 13+ call Request Notification Permission. Test with <b>Messaging › New campaign › Send test message</b> and the token from Get FCM Token.</div>
+        <div><b>Crashlytics</b>Open <b>Crashlytics</b> once. A crash is reported at the next launch. Tick Upload Crashlytics Native Symbols in Project Settings for readable native stacks.</div>
+        <div><b>Analytics</b>On by default. Live events in <b>DebugView</b> after <span class="p">adb shell setprop debug.firebase.analytics.app com.studio.mygame</span></div>
+        <div><b>App Check</b><b>Security › App Check › Apps</b>: register the Android app with <b>Play Integrity</b> (SHA-256 of the app signing key, chapter 5). While developing, tick Use App Check Debug Provider In Development Builds, find the debug secret in logcat (search <span class="p">debugtokens:create</span>), add it under <b>Manage debug tokens</b>. Enforce only once valid tokens arrive.</div>
+      </div>
     </div>
   </div>
 
   <div class="ch" id="setup-signing">
-    <h3>5 · Android signing and SHA certificates</h3>
-    <p class="why">Google sign-in, Play Games, Phone auth and App Check check which key signed your app. A missing fingerprint gives DEVELOPER_ERROR (code 10).</p>
-    <ol>
-      <li>Create a release key once, keep it safe (losing it means you can't update your game):</li>
+    ${chHead(5, 'Android signing and SHA certificates', 'Google sign-in, Play Games, Phone auth and App Check check which key signed your app. A missing fingerprint gives DEVELOPER_ERROR (code 10).', '10 min')}
+    <ol class="gs">
+      ${st(`Create a release key once, and keep it safe: losing it means you can’t update your game.<pre>keytool -genkeypair -v -keystore MyGame.keystore -alias mygame -keyalg RSA -keysize 2048 -validity 10000</pre>`)}
+      ${st(`Put it in <span class="p">YourProject/Build/Android/</span> and fill <span class="p">Project Settings › Platforms › Android › Distribution Signing</span> (Key Store, Key Alias, passwords).`)}
+      ${st(`Read its fingerprints and add the <b>SHA-1</b> and <b>SHA-256</b> to the Android app in <b>Firebase › Project settings › Your apps › Add fingerprint</b> (chapter 3, step 5).<pre>keytool -list -v -keystore Build/Android/MyGame.keystore -alias mygame</pre>`)}
+      ${st(`Development builds are signed with the debug key: add its fingerprints too (<span class="p">%USERPROFILE%\\.android\\debug.keystore</span>, alias <span class="p">androiddebugkey</span>, password <span class="p">android</span>).`)}
+      ${st(`After your first upload to Google Play, Play re-signs the app: copy the <b>App signing key</b> SHA-1 and SHA-256 from <b>Play Console › Test and release › App integrity › App signing</b> into Firebase as well, then download google-services.json again.`)}
     </ol>
-<pre>keytool -genkeypair -v -keystore MyGame.keystore -alias mygame -keyalg RSA -keysize 2048 -validity 10000</pre>
-    <ol start="2">
-      <li>Put it in <span class="p">YourProject/Build/Android/</span> and fill <span class="p">Project Settings › Platforms › Android › Distribution Signing</span> (Key Store, Key Alias, passwords).</li>
-      <li>Read its fingerprints and add the <b>SHA-1</b> and <b>SHA-256</b> to the Android app in <b>Firebase › Project settings</b>:</li>
-    </ol>
-<pre>keytool -list -v -keystore Build/Android/MyGame.keystore -alias mygame</pre>
-    <ol start="4">
-      <li>Development builds are signed with the debug key: add its fingerprints too (<span class="p">%USERPROFILE%\\.android\\debug.keystore</span>, alias <span class="p">androiddebugkey</span>, password <span class="p">android</span>).</li>
-      <li>After your first upload to Google Play, Play re-signs the app: copy the <b>App signing key</b> SHA-1 and SHA-256 from <b>Play Console › Test and release › App integrity › App signing</b> into Firebase as well, then download google-services.json again.</li>
-    </ol>
-    <p class="note">Sign-in works from your PC but fails once installed from Google Play? The App signing key fingerprints (step 5) are missing.</p>
+    <p class="note warn">Sign-in works from your PC but fails once installed from Google Play? The App signing key fingerprints (step 5) are missing.</p>
   </div>
 
   <div class="ch" id="setup-play">
-    <h3>6 · Google Play Console</h3>
-    <p class="why">Needed for Play Billing, Play Games, in-app updates and reviews, and App Check Play Integrity: these only work on builds installed from a Play track.</p>
-    <ol>
-      <li>Create a developer account at <b>play.google.com/console</b> (one-time fee), then <b>Create app</b>: app name, the same package name as in Firebase (it can't be changed later), <b>Game</b>, <b>Free</b> or Paid, and accept the two declarations.</li>
-      <li><b>Test and release › Testing › Internal testing</b>: create a release and upload your <span class="p">.aab</span> (chapter 10).</li>
-      <li>Add your testers' Google accounts in the <b>Testers</b> tab (create an email list, tick it, Save), open the opt-in link on the phone, then install the game from the Play Store page it leads to.</li>
-      <li>Each new upload needs a higher <span class="p">Project Settings › Platforms › Android › Store Version</span>.</li>
+    ${chHead(6, 'Google Play Console', 'Needed for Play Billing, Play Games, in-app updates and reviews, and App Check Play Integrity: these only work on builds installed from a Play track.', '15 min')}
+    <ol class="gs">
+      ${st(`Create a developer account at <b>play.google.com/console</b> (one-time fee), then <b>Create app</b>: the app name, and the same package name as in Firebase. It can’t be changed later.`, 'pc-create-app', 'Create app: app name and package name')}
+      ${st(`Choose <b>Game</b>, and <b>Free</b> or Paid.`, 'pc-game-free', 'Game and Free selected')}
+      ${st(`Accept the two declarations, then <b>Create app</b>.`, 'pc-declarations', 'Developer Program Policies and US export laws declarations')}
+      ${st(`<b>Test and release › Testing › Internal testing › Create new release</b>, and upload your <span class="p">.aab</span> (chapter 10).`, 'pc-internal-testing', 'Internal testing page with Create new release')}
+      ${st(`In the <b>Testers</b> tab, create an email list with your testers’ Google accounts, tick it and Save. Open the join link on the phone, then install the game from the Play Store page it leads to.`, 'pc-testers', 'Testers tab with an email list')}
+      ${st(`Each new upload needs a higher <span class="p">Project Settings › Platforms › Android › Store Version</span>.`)}
     </ol>
-    <div class="shots">
-      ${shot('pc-create-app', 800, 520, '<b>Create app</b>: name and package name.')}
-      ${shot('pc-game-free', 800, 420, '<b>Game</b>, <b>Free</b>.')}
-      ${shot('pc-declarations', 800, 350, 'The two declarations to accept before <b>Create app</b>.')}
-      ${shot('pc-internal-testing', 800, 470, '<b>Internal testing</b>: Create new release to upload the .aab.')}
-      ${shot('pc-testers', 800, 490, '<b>Testers</b> tab: your email list, and the join link once a release is out.')}
-    </div>
     <p class="note">Google Play only accepts recent target API levels: keep Target SDK Version at the level Play currently requires (36 in the example project).</p>
   </div>
 
   <div class="ch" id="setup-games">
-    <h3>7 · Google Play Games Services</h3>
-    <ol>
-      <li><b>Play Console › Grow users › Play Games Services › Setup and management › Configuration</b>: <b>Create new Play Games Services project</b> and pick the <b>same Google Cloud project</b> as your Firebase project (it has the Firebase project ID), then <b>Use</b>.</li>
-      <li><b>Credentials › Add credential › Android</b>. The form needs an <b>OAuth client</b>: use <b>Create OAuth client</b> next to it, which opens Google Cloud with your package name and asks for the SHA-1 of the app signing key (and another client for your upload or debug key for local builds). Back in Play Console, <b>Refresh OAuth clients</b>, pick it and save.</li>
-      <li><b>Add credential › Game server</b>: pick the OAuth <b>Web client</b> that Firebase created. FirePlay signs in to Firebase with it, so Google sign-in must be enabled in Firebase Authentication.</li>
-      <li>In Firebase Authentication, enable the <b>Play Games</b> provider with that Web client's ID and secret (Google Cloud console › APIs &amp; Services › Credentials).</li>
-      <li>Copy the <b>Games App ID</b> (the number at the top of the Configuration page) into <span class="p">Project Settings › Platforms › Android › Google Play Services</span>, with <b>Enable Google Play Support</b> ticked.</li>
-      <li>Create your achievements, leaderboards and events. Put their IDs (they start with <span class="p">CgkI</span>) in an ID Table: on any Play Games node, press <b>+</b> next to the ID Table pin to create one, add a row per ID with the Android column filled, then pick rows from the drop-down.</li>
-      <li>Add your tester accounts under <b>Play Games Services › Testers</b>, and <b>Publish</b> the configuration when you release.</li>
+    ${chHead(7, 'Google Play Games Services', 'Sign-in, achievements, leaderboards, events and saved games.', '20 min')}
+    <ol class="gs">
+      ${st(`<b>Play Console › Grow users › Play Games Services › Setup and management › Configuration</b>: <b>Create new Play Games Services project</b>, pick the <b>same Google Cloud project</b> as your Firebase project (it has the Firebase project ID), then <b>Use</b>.`, 'pg-cloud-project', 'Picking the Firebase Cloud project')}
+      ${st(`The Configuration page lists what is left to do. Copy the <b>Games App ID</b> (the number at the top) into <span class="p">Project Settings › Platforms › Android › Google Play Services</span>, with <b>Enable Google Play Support</b> ticked.`, 'pg-configuration', 'Play Games Services configuration checklist')}
+      ${st(`<b>Credentials › Add credential › Android</b>.`, 'pg-credential-android', 'Add credential: Android type')}
+      ${st(`The credential needs an <b>OAuth client</b>: click <b>Create OAuth client</b>, which opens Google Cloud with your package name and asks for the SHA-1 of the app signing key (make one more for your upload or debug key). Back here, <b>Refresh OAuth clients</b>, pick it and save.`, 'pg-credential-oauth', 'No OAuth client yet: Create OAuth client')}
+      ${st(`<b>Add credential › Game server</b>: pick the OAuth <b>Web client</b> that Firebase created. FirePlay signs in to Firebase with it, so Google sign-in must be enabled in Firebase Authentication.`)}
+      ${st(`In Firebase Authentication, enable the <b>Play Games</b> provider with that Web client’s ID and secret (Google Cloud console › APIs &amp; Services › Credentials).`)}
+      ${st(`Create your achievements, leaderboards and events. Put their IDs (they start with <span class="p">CgkI</span>) in an ID Table: on any Play Games node, press <b>+</b> next to the ID Table pin to create one, add a row per ID with the Android column filled, then pick rows from the drop-down.`)}
+      ${st(`Add your tester accounts under <b>Play Games Services › Testers</b>, and <b>Publish</b> the configuration when you release.`)}
     </ol>
-    <div class="shots">
-      ${shot('pg-cloud-project', 800, 370, 'Link the Google Cloud project of your Firebase project.')}
-      ${shot('pg-configuration', 800, 520, 'The <b>Configuration</b> page: the setup checklist and your credentials.')}
-      ${shot('pg-credential-android', 800, 546, '<b>Add credential › Android</b>.')}
-      ${shot('pg-credential-oauth', 800, 230, 'No OAuth client yet: <b>Create OAuth client</b>, then Refresh.')}
-    </div>
   </div>
 
   <div class="ch" id="setup-billing">
-    <h3>8 · Google Play Billing</h3>
-    <ol>
-      <li>Upload one build to a test track first: Play only shows the product pages once an app with the billing permission exists (FirePlay adds it).</li>
-      <li><b>Monetize with Play › Products</b>: create one-time products (coins, remove ads) and subscriptions with their base plans. Activate them. The product IDs are what you pass to Query Product Details and Purchase Product.</li>
-      <li><b>Play Console › Settings › License testing</b>: add your testers' accounts. Their purchases are free test purchases.</li>
-      <li>In the game, bind OnPurchasesUpdated and call Restore Purchases at launch. Consumables are consumed for you unless you untick Auto Consume Consumables.</li>
+    ${chHead(8, 'Google Play Billing', '', '15 min')}
+    <ol class="gs">
+      ${st(`Upload one build to a test track first: Play only shows the product pages once an app with the billing permission exists (FirePlay adds it).`)}
+      ${st(`<b>Monetize with Play › Products</b>: create one-time products (coins, remove ads) and subscriptions with their base plans, and activate them. The product IDs are what you pass to Query Product Details and Purchase Product.`)}
+      ${st(`<b>Play Console › Settings › License testing</b>: add your testers’ accounts. Their purchases are free test purchases.`)}
+      ${st(`In the game, bind OnPurchasesUpdated and call Restore Purchases at launch. Consumables are consumed for you unless you untick Auto Consume Consumables.`)}
     </ol>
   </div>
 
   <div class="ch" id="setup-admob">
-    <h3>9 · AdMob and consent (UMP)</h3>
-    <ol>
-      <li><b>admob.google.com › Apps › Add app</b>: Android, and <b>No</b> to "listed on a supported app store" until your game is live (link the store later). Copy the app ID (<span class="p">ca-app-pub-…~…</span>) into <span class="p">Project Settings › Game › FirePlay › AdMob Android App Id</span>. The default is Google's sample app ID, which only serves test ads.</li>
-      <li><b>Ad units › Add ad unit</b> for each format you show. Put the unit IDs in an ID Table (press <b>+</b> next to the ID Table pin of any AdMob node), one row per placement, and pick the row on the node.</li>
-      <li>Testing: use Google's test ad units, or add your phone to AdMob Test Device Ids (its ID is printed in logcat on the first ad request). Never tap your own live ads.</li>
-      <li><b>Privacy &amp; messaging</b>: create a GDPR message (and US states if needed). At launch call Request Consent Info Update, then check Can Request Ads before loading ads; offer Show Privacy Options Form in your settings menu when Is Privacy Options Required is true.</li>
-      <li>Before release, add <span class="p">app-ads.txt</span> to your developer website as AdMob asks.</li>
+    ${chHead(9, 'AdMob and consent (UMP)', '', '10 min')}
+    <ol class="gs">
+      ${st(`<b>admob.google.com › Apps › Add app</b>: Android, and <b>No</b> to “listed on a supported app store” until your game is live (link the store later).`, 'am-add-app', 'AdMob Add app: Android, not on a store')}
+      ${st(`<b>Add ad unit</b> for each format you show.`, 'am-formats', 'Ad unit formats')}
+      ${st(`Copy the <b>app ID</b> (with <b>~</b>) into <span class="p">Project Settings › Game › FirePlay › AdMob Android App Id</span>. Put each <b>ad unit ID</b> (with <b>/</b>) in an ID Table (press <b>+</b> next to the ID Table pin of any AdMob node), one row per placement, and pick the row on the node.`, 'am-unit-created', 'The app ID and ad unit ID to copy')}
+      ${st(`Testing: use Google’s test ad units, or add your phone to AdMob Test Device Ids (its ID is printed in logcat on the first ad request). Never tap your own live ads.`)}
+      ${st(`<b>Privacy &amp; messaging</b>: create a GDPR message (and US states if needed). At launch call Request Consent Info Update, then check Can Request Ads before loading ads; offer Show Privacy Options Form in your settings menu when Is Privacy Options Required is true.`)}
+      ${st(`Before release, add <span class="p">app-ads.txt</span> to your developer website as AdMob asks.`)}
     </ol>
-    <p class="note">New ad units can take a few hours before serving real ads (error NoFill). Test ads work immediately.</p>
-    <div class="shots">
-      ${shot('am-add-app', 680, 280, '<b>Add app</b>: Android, not on a store yet.')}
-      ${shot('am-formats', 580, 526, '<b>Add ad unit</b>: pick a format per placement.')}
-      ${shot('am-unit-created', 540, 430, 'The app ID (with <b>~</b>) and the ad unit ID (with <b>/</b>) to copy.')}
-    </div>
+    <p class="note">The default app ID is Google’s sample, which only serves test ads. New ad units can take a few hours before serving real ads (error NoFill); test ads work immediately.</p>
   </div>
 
   <div class="ch" id="setup-package">
-    <h3>10 · Package for Android</h3>
-    <ol>
-      <li><span class="p">Project Settings › Platforms › Android</span>: package name, Minimum SDK 26, Target SDK as Play requires, Store Version (increase it for every upload), Distribution Signing (chapter 5). Click <b>Configure Now</b> if the project isn't set up for Android yet.</li>
-      <li>Keep <b>Generate bundle (AAB)</b> on: Google Play wants an <span class="p">.aab</span>.</li>
-      <li><span class="p">Platforms › Android › Package Project</span> with the <b>Shipping</b> configuration and <b>For Distribution</b> ticked in <span class="p">Project Settings › Packaging</span>. Without For Distribution the build is signed with the debug key and Play rejects it.</li>
-      <li>Upload the <span class="p">.aab</span> to the internal testing track (chapter 6) and install it from the Play Store link.</li>
+    ${chHead(10, 'Package for Android', '', '')}
+    <ol class="gs">
+      ${st(`<span class="p">Project Settings › Platforms › Android</span>: package name, Minimum SDK 26, Target SDK as Play requires, Store Version (increase it for every upload), Distribution Signing (chapter 5). Click <b>Configure Now</b> if the project isn’t set up for Android yet.`)}
+      ${st(`Keep <b>Generate bundle (AAB)</b> on: Google Play wants an <span class="p">.aab</span>.`)}
+      ${st(`<span class="p">Platforms › Android › Package Project</span> with the <b>Shipping</b> configuration and <b>For Distribution</b> ticked in <span class="p">Project Settings › Packaging</span>.`)}
+      ${st(`Upload the <span class="p">.aab</span> to the internal testing track (chapter 6) and install it from the Play Store link.`)}
     </ol>
+    <p class="note warn">Without For Distribution the build is signed with the debug key and Play rejects it.</p>
   </div>
 
   <div class="ch" id="setup-trouble">
-    <h3>11 · Troubleshooting</h3>
-    <div class="tw"><table><tbody>
-      <tr><th>Firebase isn't initialized</th><td><span class="p">google-services.json</span> missing from <span class="p">Config/Firebase</span>, or its package name differs from the one in Project Settings.</td></tr>
-      <tr><th>Google / Play Games sign-in: DEVELOPER_ERROR (10)</th><td>A SHA-1 is missing (often the Play App signing key), or google-services.json has no Web client: enable Google sign-in in Firebase and download the file again.</td></tr>
-      <tr><th>Play Games calls fail with DeveloperError</th><td>Games App ID or Enable Google Play Support missing (chapter 7), your account isn't a tester, or the ID Table row has no Android ID.</td></tr>
-      <tr><th>Billing: ItemUnavailable / BillingUnavailable</th><td>The game wasn't installed from a Play track, the product isn't active, or the account isn't a license tester.</td></tr>
-      <tr><th>Ads: NoFill</th><td>Normal for brand-new ad units or test devices with real units. Try Google's test ad units.</td></tr>
-      <tr><th>Firestore / Database / Storage: PermissionDenied</th><td>Your security rules refuse the call, or no player is signed in yet.</td></tr>
-      <tr><th>Functions: NotFound or Unauthenticated</th><td>Wrong function name or region, or App Check is enforced while the build sends no valid token.</td></tr>
-      <tr><th>No notification shown</th><td>Android 13+ needs Request Notification Permission; while the game is in the foreground, notifications arrive on OnFCMMessageReceived instead.</td></tr>
-    </tbody></table></div>
-    <p class="note">Every FirePlay failure also logs a line starting with <span class="p">LogFirePlay</span>: check the Output Log in the editor, or <span class="p">adb logcat</span> on a device.</p>
+    ${chHead(11, 'Troubleshooting', 'Every FirePlay failure also logs a line starting with <span class="p">LogFirePlay</span>: check the Output Log in the editor, or <span class="p">adb logcat</span> on a device.', '')}
+    <details><summary>Firebase isn’t initialized</summary><p><span class="p">google-services.json</span> is missing from <span class="p">Config/Firebase</span>, or its package name differs from the one in Project Settings.</p></details>
+    <details><summary>Google / Play Games sign-in: DEVELOPER_ERROR (10)</summary><p>A SHA-1 is missing (often the Play App signing key), or google-services.json has no Web client: enable Google sign-in in Firebase and download the file again.</p></details>
+    <details><summary>Play Games calls fail with DeveloperError</summary><p>Games App ID or Enable Google Play Support missing (chapter 7), your account isn’t a tester, or the ID Table row has no Android ID.</p></details>
+    <details><summary>Billing: ItemUnavailable / BillingUnavailable</summary><p>The game wasn’t installed from a Play track, the product isn’t active, or the account isn’t a license tester.</p></details>
+    <details><summary>Ads: NoFill</summary><p>Normal for brand-new ad units, or test devices with real units. Try Google’s test ad units.</p></details>
+    <details><summary>Firestore / Database / Storage: PermissionDenied</summary><p>Your security rules refuse the call, or no player is signed in yet.</p></details>
+    <details><summary>Functions: NotFound or Unauthenticated</summary><p>Wrong function name or region, or App Check is enforced while the build sends no valid token.</p></details>
+    <details><summary>No notification shown</summary><p>Android 13+ needs Request Notification Permission. While the game is in the foreground, notifications arrive on OnFCMMessageReceived instead.</p></details>
   </div>
 </div>
 </section>`;
