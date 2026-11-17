@@ -112,7 +112,7 @@ footer { margin-top: 56px; color: var(--ink-3); font-size: 13px; }
   <p class="facts">Unreal Engine 5.8 · Windows (event-driven) · Enhanced Input integration</p>
 
   <h2>Overview</h2>
-  <p>KeyboardLayout watches the keyboard layout of the OS window that has focus and reports it as a plain <code>EKeyboardLayoutFamily</code> enum value (QWERTY, AZERTY, QWERTZ). It deliberately doesn't expose the OS <em>language</em>: on Windows, the virtual-key codes for the Latin alphabet only shift for layouts that actually rearrange it &mdash; AZERTY, and QWERTZ's Y/Z swap &mdash; while every other language (English, Spanish, Italian, Portuguese, Dutch, Polish, Turkish, and every non-Latin script, which keeps its Latin shortcuts pinned to the QWERTY positions) behaves exactly like QWERTY for gameplay bindings. So there are only ever a handful of families to map, not one entry per language. On Windows it reacts to the <code>WM_INPUTLANGCHANGE</code> system message, so detection is instant and costs nothing while the layout isn't changing — it never polls.</p>
+  <p>KeyboardLayout watches the keyboard layout of the OS window that has focus and reports it as a plain <code>EKeyboardLayoutFamily</code> enum value (QWERTY, AZERTY, QWERTZ, Dvorak, TurkishF). It deliberately doesn't expose the OS <em>language</em>: on Windows, the virtual-key codes for the Latin alphabet only move off QWERTY for layouts that actually rearrange it &mdash; AZERTY, QWERTZ's Y/Z swap, and the two layouts that rearrange everything (Dvorak, Turkish F) &mdash; while every other language (English, Spanish, Italian, Portuguese, Dutch, Polish, Turkish's default Q layout, and every non-Latin script, which keeps its Latin shortcuts pinned to the QWERTY positions) behaves exactly like QWERTY for gameplay bindings. So there are only ever a handful of families to map, not one entry per language. On Windows it reacts to the <code>WM_INPUTLANGCHANGE</code> system message, so detection is instant and costs nothing while the layout isn't changing — it never polls.</p>
   <p>A single map in Project Settings says which Input Mapping Context each family gets. A per-player subsystem watches for layout changes and adds/removes the matching context on the player's <code>EnhancedInputLocalPlayerSubsystem</code> automatically, so a project only has to fill in that map — it never calls <code>AddMappingContext</code> itself.</p>
 
   <h2>Setup</h2>
@@ -191,7 +191,14 @@ footer { margin-top: 56px; color: var(--ink-3); font-size: 13px; }
   <div class="card">
     <header><span class="name">EKeyboardLayoutFamily</span><span class="kind">Enum</span></header>
     <div class="body">
-      <p>Unknown, QWERTY, AZERTY, QWERTZ. On Windows, the virtual-key codes for the Latin alphabet only move off QWERTY for layouts that actually rearrange it: AZERTY (France, Belgium, Luxembourg, Monaco) and QWERTZ's Y/Z swap (German-speaking layouts, and Swiss French). Every other language &mdash; including every non-Latin script, which keeps its Latin shortcuts pinned to QWERTY positions &mdash; resolves to QWERTY. Recognizing another family is a one-line addition in the plugin's C++, no API change.</p>
+      <p>Unknown, QWERTY, AZERTY, QWERTZ, Dvorak, TurkishF. On Windows, the virtual-key codes for the Latin alphabet only move off QWERTY for layouts that actually rearrange it:</p>
+      <table class="fields">
+        <tr><td class="sig">AZERTY</td><td class="doc">France, Belgium, Luxembourg, Monaco.</td></tr>
+        <tr><td class="sig">QWERTZ</td><td class="doc">Y/Z swap only (never touches WASD): Germany, Austria, Swiss French/German, Czech, Slovak, Hungarian.</td></tr>
+        <tr><td class="sig">Dvorak</td><td class="doc">US-Dvorak and its one-handed variants &mdash; a full rearrangement, unrelated to QWERTY. Still reports as the English language, so it's told apart by its own id, not by language.</td></tr>
+        <tr><td class="sig">TurkishF</td><td class="doc">Turkish F ("F klavye") &mdash; a full rearrangement, distinct from the QWERTY-based Turkish Q most Turkish users actually have. Also told apart by id, not language.</td></tr>
+      </table>
+      <p>Every other language &mdash; including every non-Latin script, which keeps its Latin shortcuts pinned to QWERTY positions &mdash; resolves to QWERTY. Recognizing another family is a one-line addition in the plugin's C++, no API change.</p>
     </div>
   </div>
 
