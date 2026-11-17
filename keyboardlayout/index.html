@@ -113,16 +113,22 @@ footer { margin-top: 56px; color: var(--ink-3); font-size: 13px; }
 
   <h2>Overview</h2>
   <p>KeyboardLayout watches the keyboard layout of the OS window that has focus and reports it as a plain <code>EKeyboardLayoutFamily</code> enum value (QWERTY, AZERTY, QWERTZ, Dvorak, TurkishF). It deliberately doesn't expose the OS <em>language</em>: on Windows, the virtual-key codes for the Latin alphabet only move off QWERTY for layouts that actually rearrange it &mdash; AZERTY, QWERTZ's Y/Z swap, and the two layouts that rearrange everything (Dvorak, Turkish F) &mdash; while every other language (English, Spanish, Italian, Portuguese, Dutch, Polish, Turkish's default Q layout, and every non-Latin script, which keeps its Latin shortcuts pinned to the QWERTY positions) behaves exactly like QWERTY for gameplay bindings. So there are only ever a handful of families to map, not one entry per language. On Windows it reacts to the <code>WM_INPUTLANGCHANGE</code> system message, so detection is instant and costs nothing while the layout isn't changing — it never polls.</p>
-  <p>A single map in Project Settings says which Input Mapping Context each family gets. A per-player subsystem watches for layout changes and adds/removes the matching context on the player's <code>EnhancedInputLocalPlayerSubsystem</code> automatically, so a project only has to fill in that map — it never calls <code>AddMappingContext</code> itself.</p>
+  <p>A per-player subsystem watches for layout changes and adds/removes the matching Input Mapping Context on the player's <code>EnhancedInputLocalPlayerSubsystem</code> automatically. Which context it picks for a given family can come from two places: a context your project authors once and KeyboardLayout <strong>translates automatically</strong> for every other family, or a context you hand-author yourself for full control. Both can be used together — see "Automatic key translation" below.</p>
 
   <h2>Setup</h2>
   <ol>
     <li>Enable the <strong>KeyboardLayout</strong> plugin. It depends on <strong>Enhanced Input</strong>, which is enabled automatically.</li>
     <li>Open <strong>Project Settings &rarr; Game &rarr; Keyboard Layout</strong>.</li>
-    <li>Add one entry per layout family you want to react to in <strong>Layout Family Mappings</strong>: pick the family, assign the Input Mapping Context to apply for it. Most projects only need one entry for <strong>AZERTY</strong> (ZQSD) on top of their default QWERTY bindings. A family left out is simply not reacted to.</li>
-    <li>Set <strong>Mapping Priority</strong> if these contexts need to outrank (or lose to) others already active.</li>
+    <li>Set <strong>Canonical Mapping Context</strong> to the Input Mapping Context your project already authors with (the one with WASD on it). Leave <strong>Canonical Layout Family</strong> at its default, <strong>QWERTY</strong>.</li>
+    <li>That's it for most projects: AZERTY and QWERTZ players now get a translated copy of that same context (ZQSD instead of WASD, etc.) with no second context to author or maintain.</li>
+    <li>Only if you want bindings that aren't a mechanical translation of the canonical ones for a given family (or need Turkish F, which auto-translation doesn't cover yet — see below), add an entry for it in <strong>Layout Family Mappings</strong> instead; it takes priority over the automatic translation for that family.</li>
   </ol>
-  <p>Every local player picks this up automatically. To give one specific player a different context instead, call <code>SetContextForLayoutFamily</code> on its <code>KeyboardLayoutInputSubsystem</code> — see the quick starts below.</p>
+  <p>Set <strong>Mapping Priority</strong> if these contexts need to outrank (or lose to) others already active. To give one specific player a different context instead, call <code>SetContextForLayoutFamily</code> on its <code>KeyboardLayoutInputSubsystem</code> — see the quick starts below.</p>
+
+  <h2>Automatic key translation</h2>
+  <p>KeyboardLayout can derive a working Input Mapping Context for AZERTY, QWERTZ and Dvorak from a single context you author in QWERTY, instead of requiring a hand-authored copy per family. It clones <strong>Canonical Mapping Context</strong> and swaps every key to its physical-position equivalent &mdash; e.g. <code>W</code> and <code>A</code> become <code>Z</code> and <code>Q</code> for AZERTY, the ZQSD convention &mdash; while every other property of the mapping (modifiers, triggers, the action it drives) is copied as-is. Keys outside that 26-letter block (digits, Space, mouse, gamepad, ...) are left untouched, since those already fire identically across every layout this plugin cares about.</p>
+  <p>Translation only runs between layouts with a verified table: QWERTY, AZERTY, QWERTZ and Dvorak. <strong>Turkish F isn't included</strong> &mdash; its full key-by-key layout hasn't been verified against real hardware, and guessing would be worse than leaving it alone. Give Turkish F a hand-authored context in <strong>Layout Family Mappings</strong> if you need to support it.</p>
+  <p>This complements, rather than replaces, hand-authored contexts: any family with an explicit entry in <strong>Layout Family Mappings</strong> uses that instead of the automatic translation, so you can mix both &mdash; translate by default, override the families that need something smarter than a mechanical key swap.</p>
 
   <h2>Blueprint examples</h2>
 
@@ -206,9 +212,11 @@ footer { margin-top: 56px; color: var(--ink-3); font-size: 13px; }
     <header><span class="name">UKeyboardLayoutSettings</span><span class="kind">Developer Settings &middot; Project Settings &rarr; Game &rarr; Keyboard Layout</span></header>
     <div class="body">
       <table class="fields">
-        <tr><td class="sig">Layout Family Mappings</td><td class="doc">Map of <span class="mono">Keyboard Layout Family &rarr; Input Mapping Context</span>. A family left out isn't reacted to. Edited directly as a map in Project Settings &mdash; no separate asset.</td></tr>
-        <tr><td class="sig">Mapping Priority</td><td class="doc">Int, default <span class="mono">0</span> &mdash; priority passed to <span class="mono">AddMappingContext</span> for every context above.</td></tr>
-        <tr><td class="sig">Auto Apply To Local Players</td><td class="doc">Bool, default <span class="mono">true</span> &mdash; set to <span class="mono">false</span> to ignore <strong>Layout Family Mappings</strong> and only react to per-player overrides set via <span class="mono">SetContextForLayoutFamily</span>.</td></tr>
+        <tr><td class="sig">Canonical Mapping Context</td><td class="doc">The Input Mapping Context your project authors with. Any family with no entry in <strong>Layout Family Mappings</strong> gets an automatically key-translated copy of this one instead (see "Automatic key translation" above). Leave unset to disable auto-translation entirely.</td></tr>
+        <tr><td class="sig">Canonical Layout Family</td><td class="doc">The family <strong>Canonical Mapping Context</strong> was authored for. Default <span class="mono">QWERTY</span>; almost never needs changing.</td></tr>
+        <tr><td class="sig">Layout Family Mappings</td><td class="doc">Map of <span class="mono">Keyboard Layout Family &rarr; Input Mapping Context</span>, for families that need something other than a mechanical translation of the canonical context (or that auto-translation doesn't cover, like Turkish F). Takes priority over auto-translation for any family listed here.</td></tr>
+        <tr><td class="sig">Mapping Priority</td><td class="doc">Int, default <span class="mono">0</span> &mdash; priority passed to <span class="mono">AddMappingContext</span> for every context above, auto-translated ones included.</td></tr>
+        <tr><td class="sig">Auto Apply To Local Players</td><td class="doc">Bool, default <span class="mono">true</span> &mdash; set to <span class="mono">false</span> to ignore <strong>Layout Family Mappings</strong> and <strong>Canonical Mapping Context</strong>, and only react to per-player overrides set via <span class="mono">SetContextForLayoutFamily</span>.</td></tr>
       </table>
     </div>
   </div>
