@@ -63,11 +63,27 @@ table.fields .event { color: #a83a32; }
 table.fields .doc { color: var(--ink-2); font-size: 14px; }
 footer { margin-top: 56px; color: var(--ink-3); font-size: 13px; }
 
+/* Keyboard diagram: the whole plugin in one picture -- same fingers, different letters. */
+.diagram { margin: 18px 0; }
+.diagram svg { width: 100%; height: auto; max-width: 620px; display: block; margin: 0 auto; }
+.key { fill: var(--surface-2); stroke: var(--line); }
+.key.hl { fill: var(--accent); stroke: var(--accent-ink); }
+.key-label { font: 600 13px var(--f-mono); fill: var(--ink-2); text-anchor: middle; dominant-baseline: central; }
+.key-label.hl { fill: #fff; }
+.diagram-label { font: 700 17px var(--f-display); fill: var(--ink); text-anchor: middle; }
+.diagram-caption { font: 700 13px var(--f-mono); fill: var(--accent-ink); text-anchor: middle; }
+.diagram-arrow { font: 400 26px var(--f-body); fill: var(--ink-3); text-anchor: middle; }
+.diagram-arrow-label { font: 500 10.5px var(--f-mono); fill: var(--ink-3); text-anchor: middle; }
+.note {
+  margin: 14px 0 0; padding: 9px 12px; border-left: 3px solid var(--accent);
+  background: var(--surface-2); border-radius: 0 6px 6px 0; font-size: 13.5px; color: var(--ink-2);
+}
+
 /* Quick start graphs: Blueprint nodes drawn like the editor's (dark body in both themes), wired top to bottom. */
 .recipe { background: var(--surface-2); border: 1px dashed var(--line); border-radius: var(--r); padding: 12px 14px 14px; margin-bottom: 16px; }
 .recipe-title { font: 600 12px var(--f-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-ink); margin: 0 0 10px; }
 .recipe-title span { text-transform: none; letter-spacing: 0; font: 500 14px var(--f-body); color: var(--ink); margin-left: 6px; }
-.recipe p.note { margin: 10px 0 0; font-size: 13.5px; }
+.recipe p.note { margin: 10px 0 0; font-size: 13.5px; border: none; background: none; padding: 0; }
 .graph { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 0; overflow-x: auto; padding-bottom: 4px; }
 .bpn {
   --pin-exec: #f2f2f2; --pin-string: #ff4fd8; --pin-object: #33b4f2; --pin-int: #2fe0b2; --pin-enum: #1fbba3;
@@ -108,27 +124,88 @@ footer { margin-top: 56px; color: var(--ink-3); font-size: 13px; }
 <main>
   <a class="back" href="../">&larr; GameFeel Studio</a>
   <h1>KeyboardLayout</h1>
-  <p class="lede">Detects the OS keyboard layout and switches Enhanced Input mapping contexts automatically — no polling, no per-project C++.</p>
+  <p class="lede">Switches Enhanced Input bindings automatically when a player's physical keyboard isn't QWERTY &mdash; WASD becomes ZQSD on French, no extra work.</p>
   <p class="facts">Unreal Engine 5.8 · Windows (event-driven) · Enhanced Input integration</p>
 
-  <h2>Overview</h2>
-  <p>KeyboardLayout watches the keyboard layout of the OS window that has focus and reports it as a plain <code>EKeyboardLayoutFamily</code> enum value (QWERTY, AZERTY, QWERTZ, Dvorak, TurkishF). It deliberately doesn't expose the OS <em>language</em>: on Windows, the virtual-key codes for the Latin alphabet only move off QWERTY for layouts that actually rearrange it &mdash; AZERTY, QWERTZ's Y/Z swap, and the two layouts that rearrange everything (Dvorak, Turkish F) &mdash; while every other language (English, Spanish, Italian, Portuguese, Dutch, Polish, Turkish's default Q layout, and every non-Latin script, which keeps its Latin shortcuts pinned to the QWERTY positions) behaves exactly like QWERTY for gameplay bindings. So there are only ever a handful of families to map, not one entry per language. On Windows it reacts to the <code>WM_INPUTLANGCHANGE</code> system message, so detection is instant and costs nothing while the layout isn't changing — it never polls.</p>
-  <p>A per-player subsystem watches for layout changes and adds/removes the matching Input Mapping Context on the player's <code>EnhancedInputLocalPlayerSubsystem</code> automatically. Which context it picks for a given family can come from two places: a context your project authors once and KeyboardLayout <strong>translates automatically</strong> for every other family, or a context you hand-author yourself for full control. Both can be used together — see "Automatic key translation" below.</p>
+  <h2>How it works</h2>
+  <p>Author one Input Mapping Context in QWERTY. KeyboardLayout detects the player's actual layout and swaps each key to its physical-position equivalent automatically:</p>
+
+  <div class="diagram">
+    <svg viewBox="0 0 900 150" role="img" aria-label="QWERTY keyboard with W, A, S, D highlighted, auto-translating to AZERTY with Z, Q, S, D highlighted in the same positions">
+      <g transform="translate(10,40)">
+        <text class="diagram-label" x="197" y="-16">QWERTY</text>
+        <!-- top row: Q W E R T Y U I O P (W highlighted) -->
+        <g>
+          <rect class="key" x="0" y="0" width="34" height="34" rx="6"/><text class="key-label" x="17" y="17">Q</text>
+          <rect class="key hl" x="40" y="0" width="34" height="34" rx="6"/><text class="key-label hl" x="57" y="17">W</text>
+          <rect class="key" x="80" y="0" width="34" height="34" rx="6"/><text class="key-label" x="97" y="17">E</text>
+          <rect class="key" x="120" y="0" width="34" height="34" rx="6"/><text class="key-label" x="137" y="17">R</text>
+          <rect class="key" x="160" y="0" width="34" height="34" rx="6"/><text class="key-label" x="177" y="17">T</text>
+          <rect class="key" x="200" y="0" width="34" height="34" rx="6"/><text class="key-label" x="217" y="17">Y</text>
+          <rect class="key" x="240" y="0" width="34" height="34" rx="6"/><text class="key-label" x="257" y="17">U</text>
+          <rect class="key" x="280" y="0" width="34" height="34" rx="6"/><text class="key-label" x="297" y="17">I</text>
+          <rect class="key" x="320" y="0" width="34" height="34" rx="6"/><text class="key-label" x="337" y="17">O</text>
+          <rect class="key" x="360" y="0" width="34" height="34" rx="6"/><text class="key-label" x="377" y="17">P</text>
+        </g>
+        <!-- home row: A S D F G H J K L (A S D highlighted) -->
+        <g>
+          <rect class="key hl" x="0" y="40" width="34" height="34" rx="6"/><text class="key-label hl" x="17" y="57">A</text>
+          <rect class="key hl" x="40" y="40" width="34" height="34" rx="6"/><text class="key-label hl" x="57" y="57">S</text>
+          <rect class="key hl" x="80" y="40" width="34" height="34" rx="6"/><text class="key-label hl" x="97" y="57">D</text>
+          <rect class="key" x="120" y="40" width="34" height="34" rx="6"/><text class="key-label" x="137" y="57">F</text>
+          <rect class="key" x="160" y="40" width="34" height="34" rx="6"/><text class="key-label" x="177" y="57">G</text>
+          <rect class="key" x="200" y="40" width="34" height="34" rx="6"/><text class="key-label" x="217" y="57">H</text>
+          <rect class="key" x="240" y="40" width="34" height="34" rx="6"/><text class="key-label" x="257" y="57">J</text>
+          <rect class="key" x="280" y="40" width="34" height="34" rx="6"/><text class="key-label" x="297" y="57">K</text>
+          <rect class="key" x="320" y="40" width="34" height="34" rx="6"/><text class="key-label" x="337" y="57">L</text>
+        </g>
+        <text class="diagram-caption" x="197" y="100">W A S D = Move</text>
+      </g>
+
+      <text class="diagram-arrow" x="450" y="80">&#8594;</text>
+      <text class="diagram-arrow-label" x="450" y="100">auto-translated</text>
+
+      <g transform="translate(480,40)">
+        <text class="diagram-label" x="197" y="-16">AZERTY</text>
+        <!-- top row: A Z E R T Y U I O P (Z highlighted) -->
+        <g>
+          <rect class="key" x="0" y="0" width="34" height="34" rx="6"/><text class="key-label" x="17" y="17">A</text>
+          <rect class="key hl" x="40" y="0" width="34" height="34" rx="6"/><text class="key-label hl" x="57" y="17">Z</text>
+          <rect class="key" x="80" y="0" width="34" height="34" rx="6"/><text class="key-label" x="97" y="17">E</text>
+          <rect class="key" x="120" y="0" width="34" height="34" rx="6"/><text class="key-label" x="137" y="17">R</text>
+          <rect class="key" x="160" y="0" width="34" height="34" rx="6"/><text class="key-label" x="177" y="17">T</text>
+          <rect class="key" x="200" y="0" width="34" height="34" rx="6"/><text class="key-label" x="217" y="17">Y</text>
+          <rect class="key" x="240" y="0" width="34" height="34" rx="6"/><text class="key-label" x="257" y="17">U</text>
+          <rect class="key" x="280" y="0" width="34" height="34" rx="6"/><text class="key-label" x="297" y="17">I</text>
+          <rect class="key" x="320" y="0" width="34" height="34" rx="6"/><text class="key-label" x="337" y="17">O</text>
+          <rect class="key" x="360" y="0" width="34" height="34" rx="6"/><text class="key-label" x="377" y="17">P</text>
+        </g>
+        <!-- home row: Q S D F G H J K L (Q S D highlighted) -->
+        <g>
+          <rect class="key hl" x="0" y="40" width="34" height="34" rx="6"/><text class="key-label hl" x="17" y="57">Q</text>
+          <rect class="key hl" x="40" y="40" width="34" height="34" rx="6"/><text class="key-label hl" x="57" y="57">S</text>
+          <rect class="key hl" x="80" y="40" width="34" height="34" rx="6"/><text class="key-label hl" x="97" y="57">D</text>
+          <rect class="key" x="120" y="40" width="34" height="34" rx="6"/><text class="key-label" x="137" y="57">F</text>
+          <rect class="key" x="160" y="40" width="34" height="34" rx="6"/><text class="key-label" x="177" y="57">G</text>
+          <rect class="key" x="200" y="40" width="34" height="34" rx="6"/><text class="key-label" x="217" y="57">H</text>
+          <rect class="key" x="240" y="40" width="34" height="34" rx="6"/><text class="key-label" x="257" y="57">J</text>
+          <rect class="key" x="280" y="40" width="34" height="34" rx="6"/><text class="key-label" x="297" y="57">K</text>
+          <rect class="key" x="320" y="40" width="34" height="34" rx="6"/><text class="key-label" x="337" y="57">L</text>
+        </g>
+        <text class="diagram-caption" x="197" y="100">Z Q S D = Move</text>
+      </g>
+    </svg>
+  </div>
+
+  <p>Same physical keys, same action &mdash; only the printed letter differs. Only the letters that actually move get swapped (4 for AZERTY, 2 for QWERTZ, the whole alphabet for Dvorak); digits, Space, mouse and gamepad are untouched since those already work identically on every layout. Detection reacts instantly to Windows' own layout-change event, so it never polls.</p>
 
   <h2>Setup</h2>
   <ol>
-    <li>Enable the <strong>KeyboardLayout</strong> plugin. It depends on <strong>Enhanced Input</strong>, which is enabled automatically.</li>
-    <li>Open <strong>Project Settings &rarr; Game &rarr; Keyboard Layout</strong>.</li>
-    <li>Set <strong>Canonical Mapping Context</strong> to the Input Mapping Context your project already authors with (the one with WASD on it). Leave <strong>Canonical Layout Family</strong> at its default, <strong>QWERTY</strong>.</li>
-    <li>That's it for most projects: AZERTY and QWERTZ players now get a translated copy of that same context (ZQSD instead of WASD, etc.) with no second context to author or maintain.</li>
-    <li>Only if you want bindings that aren't a mechanical translation of the canonical ones for a given family (or need Turkish F, which auto-translation doesn't cover yet — see below), add an entry for it in <strong>Layout Family Mappings</strong> instead; it takes priority over the automatic translation for that family.</li>
+    <li>Enable the <strong>KeyboardLayout</strong> plugin (pulls in <strong>Enhanced Input</strong> automatically).</li>
+    <li><strong>Project Settings &rarr; Game &rarr; Keyboard Layout</strong> &rarr; set <strong>Canonical Mapping Context</strong> to the Input Mapping Context your project already uses.</li>
+    <li>Done. AZERTY, QWERTZ and Dvorak players now get an auto-translated copy of it.</li>
   </ol>
-  <p>Set <strong>Mapping Priority</strong> if these contexts need to outrank (or lose to) others already active. To give one specific player a different context instead, call <code>SetContextForLayoutFamily</code> on its <code>KeyboardLayoutInputSubsystem</code> — see the quick starts below.</p>
-
-  <h2>Automatic key translation</h2>
-  <p>KeyboardLayout can derive a working Input Mapping Context for AZERTY, QWERTZ and Dvorak from a single context you author in QWERTY, instead of requiring a hand-authored copy per family. It clones <strong>Canonical Mapping Context</strong> and swaps every key to its physical-position equivalent &mdash; e.g. <code>W</code> and <code>A</code> become <code>Z</code> and <code>Q</code> for AZERTY, the ZQSD convention &mdash; while every other property of the mapping (modifiers, triggers, the action it drives) is copied as-is. Keys outside that 26-letter block (digits, Space, mouse, gamepad, ...) are left untouched, since those already fire identically across every layout this plugin cares about.</p>
-  <p>Translation only runs between layouts with a verified table: QWERTY, AZERTY, QWERTZ and Dvorak. <strong>Turkish F isn't included</strong> &mdash; its full key-by-key layout hasn't been verified against real hardware, and guessing would be worse than leaving it alone. Give Turkish F a hand-authored context in <strong>Layout Family Mappings</strong> if you need to support it.</p>
-  <p>This complements, rather than replaces, hand-authored contexts: any family with an explicit entry in <strong>Layout Family Mappings</strong> uses that instead of the automatic translation, so you can mix both &mdash; translate by default, override the families that need something smarter than a mechanical key swap.</p>
+  <p class="note">Need different bindings for one family on purpose (or Turkish F, not auto-translated yet)? Add it to <strong>Layout Family Mappings</strong> &mdash; it overrides the automatic translation for that family only. To target one specific player at runtime instead, call <code>SetContextForLayoutFamily</code> &mdash; see the quick starts below.</p>
 
   <h2>Blueprint examples</h2>
 
@@ -139,7 +216,7 @@ footer { margin-top: 56px; color: var(--ink-3); font-size: 13px; }
         <div class="io"><div class="col"></div><div class="col out"><div class="bp-pin"><i class="pi k-enum"></i><span>Return Value</span></div></div></div>
       </div>
     </div>
-    <p class="note">Pure, so it has no exec pin &mdash; wire <span class="mono">Return Value</span> (an <code>EKeyboardLayoutFamily</code>) anywhere you'd branch on it, e.g. a Switch on Enum to show QWERTY vs. ZQSD key prompts.</p>
+    <p class="note">Pure &mdash; wire <span class="mono">Return Value</span> anywhere you'd branch on it, e.g. a Switch on Enum to show QWERTY vs. ZQSD key prompts.</p>
   </div>
 
   <div class="recipe">
@@ -153,7 +230,7 @@ footer { margin-top: 56px; color: var(--ink-3); font-size: 13px; }
         <div class="io"><div class="col"><div class="bp-pin"><i class="pi exec"></i><span></span></div><div class="bp-pin"><i class="pi k-string"></i><span>In String</span><span class="lit">New Layout Family</span></div></div><div class="col out"></div></div>
       </div>
     </div>
-    <p class="note">Bind <span class="mono">On Keyboard Layout Changed</span> on the Keyboard Layout Subsystem (right-click &rarr; search its name, or drag off the auto-generated <span class="mono">Get Keyboard Layout Subsystem</span> node). It fires once per actual change, never on a timer.</p>
+    <p class="note">Right-click &rarr; search its name, or drag off <span class="mono">Get Keyboard Layout Subsystem</span>. Fires once per real change, never on a timer.</p>
   </div>
 
   <div class="recipe">
@@ -167,7 +244,7 @@ footer { margin-top: 56px; color: var(--ink-3); font-size: 13px; }
         <div class="io"><div class="col"><div class="bp-pin"><i class="pi exec"></i><span></span></div><div class="bp-pin"><i class="pi k-object"></i><span>Target</span></div><div class="bp-pin"><i class="pi k-enum"></i><span>Layout Family</span><span class="lit">AZERTY</span></div><div class="bp-pin"><i class="pi k-object"></i><span>Context</span><span class="lit">IMC_AZERTY</span></div></div><div class="col out"></div></div>
       </div>
     </div>
-    <p class="note">Wire <span class="mono">Target</span> from that player's <span class="mono">Get Keyboard Layout Input Subsystem</span> node (drag off its Local Player, e.g. via <span class="mono">Get Player Controller &rarr; Get Local Player</span>). Re-running this swaps that one player's context immediately, overriding <strong>Layout Family Mappings</strong> for that family only &mdash; call <span class="mono">Clear Layout Family Overrides</span> to go back to it.</p>
+    <p class="note"><span class="mono">Target</span>: that player's <span class="mono">Get Keyboard Layout Input Subsystem</span> (e.g. via <span class="mono">Get Player Controller &rarr; Get Local Player</span>). Overrides that one family for that one player &mdash; <span class="mono">Clear Layout Family Overrides</span> undoes it.</p>
   </div>
 
   <h2>API reference</h2>
@@ -175,11 +252,10 @@ footer { margin-top: 56px; color: var(--ink-3); font-size: 13px; }
   <div class="card">
     <header><span class="name">UKeyboardLayoutSubsystem</span><span class="kind">Engine Subsystem</span></header>
     <div class="body">
-      <p>Owns detection and is the single source of truth for the current layout family. Exists for the lifetime of the engine.</p>
       <table class="fields">
-        <tr><td class="sig event">OnKeyboardLayoutChanged</td><td class="doc">Event · <span class="mono">(NewLayoutFamily: Keyboard Layout Family)</span> &mdash; broadcast whenever the detected layout family changes.</td></tr>
-        <tr><td class="sig pure">GetCachedLayoutFamily</td><td class="doc">Pure · returns <span class="mono">Keyboard Layout Family</span> &mdash; the last detected family, without re-querying the OS.</td></tr>
-        <tr><td class="sig pure">GetCachedLayoutId</td><td class="doc">Pure, <em>Advanced</em> · returns <span class="mono">String</span> &mdash; the last detected raw platform layout id (Windows HKL as 8 hex digits). Only useful to tell apart layouts that share a family, e.g. France AZERTY vs. Belgian AZERTY.</td></tr>
+        <tr><td class="sig event">OnKeyboardLayoutChanged</td><td class="doc">Event · <span class="mono">(NewLayoutFamily: Keyboard Layout Family)</span></td></tr>
+        <tr><td class="sig pure">GetCachedLayoutFamily</td><td class="doc">Pure · returns <span class="mono">Keyboard Layout Family</span></td></tr>
+        <tr><td class="sig pure">GetCachedLayoutId</td><td class="doc">Pure, <em>Advanced</em> · returns <span class="mono">String</span>, the raw Windows HKL (8 hex digits). Only needed to tell apart layouts sharing a family, e.g. France vs. Belgian AZERTY.</td></tr>
       </table>
     </div>
   </div>
@@ -188,8 +264,8 @@ footer { margin-top: 56px; color: var(--ink-3); font-size: 13px; }
     <header><span class="name">UKeyboardLayoutBPLibrary</span><span class="kind">Blueprint Function Library</span></header>
     <div class="body">
       <table class="fields">
-        <tr><td class="sig pure">GetCurrentKeyboardLayoutFamily</td><td class="doc">Pure, static · returns <span class="mono">Keyboard Layout Family</span> &mdash; shortcut for <span class="mono">UKeyboardLayoutSubsystem::GetCachedLayoutFamily</span>, usable from any Blueprint without fetching the subsystem first.</td></tr>
-        <tr><td class="sig pure">GetCurrentKeyboardLayoutId</td><td class="doc">Pure, static, <em>Advanced</em> · returns <span class="mono">String</span> &mdash; shortcut for <span class="mono">GetCachedLayoutId</span>.</td></tr>
+        <tr><td class="sig pure">GetCurrentKeyboardLayoutFamily</td><td class="doc">Pure, static &mdash; shortcut for the subsystem's <span class="mono">GetCachedLayoutFamily</span>.</td></tr>
+        <tr><td class="sig pure">GetCurrentKeyboardLayoutId</td><td class="doc">Pure, static, <em>Advanced</em> &mdash; shortcut for <span class="mono">GetCachedLayoutId</span>.</td></tr>
       </table>
     </div>
   </div>
@@ -197,14 +273,13 @@ footer { margin-top: 56px; color: var(--ink-3); font-size: 13px; }
   <div class="card">
     <header><span class="name">EKeyboardLayoutFamily</span><span class="kind">Enum</span></header>
     <div class="body">
-      <p>Unknown, QWERTY, AZERTY, QWERTZ, Dvorak, TurkishF. On Windows, the virtual-key codes for the Latin alphabet only move off QWERTY for layouts that actually rearrange it:</p>
       <table class="fields">
+        <tr><td class="sig">QWERTY</td><td class="doc">The default: English, Spanish, Italian, every non-Latin script, and anything not listed below.</td></tr>
         <tr><td class="sig">AZERTY</td><td class="doc">France, Belgium, Luxembourg, Monaco.</td></tr>
-        <tr><td class="sig">QWERTZ</td><td class="doc">Y/Z swap only (never touches WASD): Germany, Austria, Swiss French/German, Czech, Slovak, Hungarian.</td></tr>
-        <tr><td class="sig">Dvorak</td><td class="doc">US-Dvorak and its one-handed variants &mdash; a full rearrangement, unrelated to QWERTY. Still reports as the English language, so it's told apart by its own id, not by language.</td></tr>
-        <tr><td class="sig">TurkishF</td><td class="doc">Turkish F ("F klavye") &mdash; a full rearrangement, distinct from the QWERTY-based Turkish Q most Turkish users actually have. Also told apart by id, not language.</td></tr>
+        <tr><td class="sig">QWERTZ</td><td class="doc">Germany, Austria, Swiss French/German, Czech, Slovak, Hungarian. Y/Z swap only &mdash; never touches WASD.</td></tr>
+        <tr><td class="sig">Dvorak</td><td class="doc">US-Dvorak and its one-handed variants. Full rearrangement; told apart from QWERTY by id, not language.</td></tr>
+        <tr><td class="sig">TurkishF</td><td class="doc">"F klavye", distinct from the QWERTY-based Turkish Q most users have. Also told apart by id.</td></tr>
       </table>
-      <p>Every other language &mdash; including every non-Latin script, which keeps its Latin shortcuts pinned to QWERTY positions &mdash; resolves to QWERTY. Recognizing another family is a one-line addition in the plugin's C++, no API change.</p>
     </div>
   </div>
 
@@ -212,11 +287,11 @@ footer { margin-top: 56px; color: var(--ink-3); font-size: 13px; }
     <header><span class="name">UKeyboardLayoutSettings</span><span class="kind">Developer Settings &middot; Project Settings &rarr; Game &rarr; Keyboard Layout</span></header>
     <div class="body">
       <table class="fields">
-        <tr><td class="sig">Canonical Mapping Context</td><td class="doc">The Input Mapping Context your project authors with. Any family with no entry in <strong>Layout Family Mappings</strong> gets an automatically key-translated copy of this one instead (see "Automatic key translation" above). Leave unset to disable auto-translation entirely.</td></tr>
-        <tr><td class="sig">Canonical Layout Family</td><td class="doc">The family <strong>Canonical Mapping Context</strong> was authored for. Default <span class="mono">QWERTY</span>; almost never needs changing.</td></tr>
-        <tr><td class="sig">Layout Family Mappings</td><td class="doc">Map of <span class="mono">Keyboard Layout Family &rarr; Input Mapping Context</span>, for families that need something other than a mechanical translation of the canonical context (or that auto-translation doesn't cover, like Turkish F). Takes priority over auto-translation for any family listed here.</td></tr>
-        <tr><td class="sig">Mapping Priority</td><td class="doc">Int, default <span class="mono">0</span> &mdash; priority passed to <span class="mono">AddMappingContext</span> for every context above, auto-translated ones included.</td></tr>
-        <tr><td class="sig">Auto Apply To Local Players</td><td class="doc">Bool, default <span class="mono">true</span> &mdash; set to <span class="mono">false</span> to ignore <strong>Layout Family Mappings</strong> and <strong>Canonical Mapping Context</strong>, and only react to per-player overrides set via <span class="mono">SetContextForLayoutFamily</span>.</td></tr>
+        <tr><td class="sig">Canonical Mapping Context</td><td class="doc">Your QWERTY-authored context. Auto-translated for any family with no entry below. Unset disables auto-translation.</td></tr>
+        <tr><td class="sig">Canonical Layout Family</td><td class="doc">What it was authored for. Default <span class="mono">QWERTY</span>.</td></tr>
+        <tr><td class="sig">Layout Family Mappings</td><td class="doc">Map of <span class="mono">Family &rarr; Input Mapping Context</span> for hand-authored exceptions (or Turkish F). Overrides auto-translation per family.</td></tr>
+        <tr><td class="sig">Mapping Priority</td><td class="doc">Int, default <span class="mono">0</span> &mdash; passed to <span class="mono">AddMappingContext</span>.</td></tr>
+        <tr><td class="sig">Auto Apply To Local Players</td><td class="doc">Bool, default <span class="mono">true</span>. <span class="mono">false</span> disables both of the above; only <span class="mono">SetContextForLayoutFamily</span> overrides apply.</td></tr>
       </table>
     </div>
   </div>
@@ -224,16 +299,14 @@ footer { margin-top: 56px; color: var(--ink-3); font-size: 13px; }
   <div class="card">
     <header><span class="name">UKeyboardLayoutInputSubsystem</span><span class="kind">Local Player Subsystem</span></header>
     <div class="body">
-      <p>Applies the project's (or this player's own) layout family mappings to this player's Enhanced Input contexts. One instance per local player.</p>
       <table class="fields">
-        <tr><td class="sig">SetContextForLayoutFamily</td><td class="doc">Callable · <span class="mono">(LayoutFamily: Keyboard Layout Family, Context: Input Mapping Context)</span> &mdash; overrides, for this player only, which context that family gets, and re-applies immediately if it's the current one. Pass <span class="mono">None</span> as Context to make this player ignore that family.</td></tr>
-        <tr><td class="sig">ClearLayoutFamilyOverrides</td><td class="doc">Callable · clears every override set via <span class="mono">SetContextForLayoutFamily</span>, falling back to <strong>Layout Family Mappings</strong> again.</td></tr>
+        <tr><td class="sig">SetContextForLayoutFamily</td><td class="doc">Callable · <span class="mono">(LayoutFamily, Context)</span> &mdash; per-player override, re-applied immediately if it's the current family. <span class="mono">None</span> makes this player ignore that family.</td></tr>
+        <tr><td class="sig">ClearLayoutFamilyOverrides</td><td class="doc">Callable &mdash; clears overrides set above.</td></tr>
       </table>
     </div>
   </div>
 
-  <h2>Platform support</h2>
-  <p>Detection is event-driven on Windows today. Detection lives behind a single internal interface, so support for another platform is a matter of adding one more implementation of it — nothing else in the plugin needs to change.</p>
+  <p class="note">Detection is event-driven on Windows today, behind one internal interface &mdash; another platform is a matter of adding one more implementation of it.</p>
 
   <footer>&copy; GameFeel Studio</footer>
 </main>
