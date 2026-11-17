@@ -112,39 +112,39 @@ footer { margin-top: 56px; color: var(--ink-3); font-size: 13px; }
   <p class="facts">Unreal Engine 5.8 · Windows (event-driven) · Enhanced Input integration</p>
 
   <h2>Overview</h2>
-  <p>KeyboardLayout watches the keyboard layout of the OS window that has focus and reports it as a plain <code>EKeyboardLanguage</code> enum value (French, German, Spanish, …). On Windows it reacts to the <code>WM_INPUTLANGCHANGE</code> system message, so detection is instant and costs nothing while the layout isn't changing — it never polls.</p>
-  <p>A single map in Project Settings says which Input Mapping Context each language gets. A per-player subsystem watches for language changes and adds/removes the matching context on the player's <code>EnhancedInputLocalPlayerSubsystem</code> automatically, so a project only has to fill in that map — it never calls <code>AddMappingContext</code> itself.</p>
+  <p>KeyboardLayout watches the keyboard layout of the OS window that has focus and reports it as a plain <code>EKeyboardLayoutFamily</code> enum value (QWERTY, AZERTY, QWERTZ). It deliberately doesn't expose the OS <em>language</em>: on Windows, the virtual-key codes for the Latin alphabet only shift for layouts that actually rearrange it &mdash; AZERTY, and QWERTZ's Y/Z swap &mdash; while every other language (English, Spanish, Italian, Portuguese, Dutch, Polish, Turkish, and every non-Latin script, which keeps its Latin shortcuts pinned to the QWERTY positions) behaves exactly like QWERTY for gameplay bindings. So there are only ever a handful of families to map, not one entry per language. On Windows it reacts to the <code>WM_INPUTLANGCHANGE</code> system message, so detection is instant and costs nothing while the layout isn't changing — it never polls.</p>
+  <p>A single map in Project Settings says which Input Mapping Context each family gets. A per-player subsystem watches for layout changes and adds/removes the matching context on the player's <code>EnhancedInputLocalPlayerSubsystem</code> automatically, so a project only has to fill in that map — it never calls <code>AddMappingContext</code> itself.</p>
 
   <h2>Setup</h2>
   <ol>
     <li>Enable the <strong>KeyboardLayout</strong> plugin. It depends on <strong>Enhanced Input</strong>, which is enabled automatically.</li>
     <li>Open <strong>Project Settings &rarr; Game &rarr; Keyboard Layout</strong>.</li>
-    <li>Add one entry per language you want to react to in <strong>Language Mappings</strong>: pick the language, assign the Input Mapping Context to apply for it. A language left out is simply not reacted to.</li>
+    <li>Add one entry per layout family you want to react to in <strong>Layout Family Mappings</strong>: pick the family, assign the Input Mapping Context to apply for it. Most projects only need one entry for <strong>AZERTY</strong> (ZQSD) on top of their default QWERTY bindings. A family left out is simply not reacted to.</li>
     <li>Set <strong>Mapping Priority</strong> if these contexts need to outrank (or lose to) others already active.</li>
   </ol>
-  <p>Every local player picks this up automatically. To give one specific player a different context instead, call <code>SetContextForLanguage</code> on its <code>KeyboardLayoutInputSubsystem</code> — see the quick starts below.</p>
+  <p>Every local player picks this up automatically. To give one specific player a different context instead, call <code>SetContextForLayoutFamily</code> on its <code>KeyboardLayoutInputSubsystem</code> — see the quick starts below.</p>
 
   <h2>Blueprint examples</h2>
 
   <div class="recipe">
-    <p class="recipe-title">Quick start<span>Get the current keyboard language</span></p>
+    <p class="recipe-title">Quick start<span>Get the current keyboard layout family</span></p>
     <div class="graph">
-      <div class="bpn pure"><header><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><text x="3" y="13" font-size="13" font-style="italic" font-family="Georgia,serif" fill="currentColor">f</text></svg><span class="t">Get Keyboard Language</span></header>
+      <div class="bpn pure"><header><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><text x="3" y="13" font-size="13" font-style="italic" font-family="Georgia,serif" fill="currentColor">f</text></svg><span class="t">Get Keyboard Layout Family</span></header>
         <div class="io"><div class="col"></div><div class="col out"><div class="bp-pin"><i class="pi k-enum"></i><span>Return Value</span></div></div></div>
       </div>
     </div>
-    <p class="note">Pure, so it has no exec pin &mdash; wire <span class="mono">Return Value</span> (an <code>EKeyboardLanguage</code>) anywhere you'd branch on the player's language, e.g. a Switch on Enum to show localized key prompts.</p>
+    <p class="note">Pure, so it has no exec pin &mdash; wire <span class="mono">Return Value</span> (an <code>EKeyboardLayoutFamily</code>) anywhere you'd branch on it, e.g. a Switch on Enum to show QWERTY vs. ZQSD key prompts.</p>
   </div>
 
   <div class="recipe">
-    <p class="recipe-title">Quick start<span>React to a language change</span></p>
+    <p class="recipe-title">Quick start<span>React to a layout change</span></p>
     <div class="graph">
       <div class="bpn event"><header><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M9 1L3 9h4l-1 6 6-8H8z" fill="currentColor"/></svg><span class="t">On Keyboard Layout Changed</span></header>
-        <div class="io"><div class="col"></div><div class="col out"><div class="bp-pin"><i class="pi exec"></i><span></span></div><div class="bp-pin"><i class="pi k-enum"></i><span>New Language</span></div></div></div>
+        <div class="io"><div class="col"></div><div class="col out"><div class="bp-pin"><i class="pi exec"></i><span></span></div><div class="bp-pin"><i class="pi k-enum"></i><span>New Layout Family</span></div></div></div>
       </div>
       <div class="wire" aria-hidden="true"><span>then</span><i></i></div>
       <div class="bpn call"><header><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 3l9 5-9 5z" fill="currentColor"/></svg><span class="t">Print String</span></header>
-        <div class="io"><div class="col"><div class="bp-pin"><i class="pi exec"></i><span></span></div><div class="bp-pin"><i class="pi k-string"></i><span>In String</span><span class="lit">New Language</span></div></div><div class="col out"></div></div>
+        <div class="io"><div class="col"><div class="bp-pin"><i class="pi exec"></i><span></span></div><div class="bp-pin"><i class="pi k-string"></i><span>In String</span><span class="lit">New Layout Family</span></div></div><div class="col out"></div></div>
       </div>
     </div>
     <p class="note">Bind <span class="mono">On Keyboard Layout Changed</span> on the Keyboard Layout Subsystem (right-click &rarr; search its name, or drag off the auto-generated <span class="mono">Get Keyboard Layout Subsystem</span> node). It fires once per actual change, never on a timer.</p>
@@ -157,11 +157,11 @@ footer { margin-top: 56px; color: var(--ink-3); font-size: 13px; }
         <div class="io"><div class="col"></div><div class="col out"><div class="bp-pin"><i class="pi exec"></i><span></span></div></div></div>
       </div>
       <div class="wire" aria-hidden="true"><span>then</span><i></i></div>
-      <div class="bpn call"><header><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 3l9 5-9 5z" fill="currentColor"/></svg><span class="t">Set Context For Language</span></header>
-        <div class="io"><div class="col"><div class="bp-pin"><i class="pi exec"></i><span></span></div><div class="bp-pin"><i class="pi k-object"></i><span>Target</span></div><div class="bp-pin"><i class="pi k-enum"></i><span>Language</span><span class="lit">French</span></div><div class="bp-pin"><i class="pi k-object"></i><span>Context</span><span class="lit">IMC_FR</span></div></div><div class="col out"></div></div>
+      <div class="bpn call"><header><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 3l9 5-9 5z" fill="currentColor"/></svg><span class="t">Set Context For Layout Family</span></header>
+        <div class="io"><div class="col"><div class="bp-pin"><i class="pi exec"></i><span></span></div><div class="bp-pin"><i class="pi k-object"></i><span>Target</span></div><div class="bp-pin"><i class="pi k-enum"></i><span>Layout Family</span><span class="lit">AZERTY</span></div><div class="bp-pin"><i class="pi k-object"></i><span>Context</span><span class="lit">IMC_AZERTY</span></div></div><div class="col out"></div></div>
       </div>
     </div>
-    <p class="note">Wire <span class="mono">Target</span> from that player's <span class="mono">Get Keyboard Layout Input Subsystem</span> node (drag off its Local Player, e.g. via <span class="mono">Get Player Controller &rarr; Get Local Player</span>). Re-running this swaps that one player's context immediately, overriding <strong>Language Mappings</strong> for that language only &mdash; call <span class="mono">Clear Language Overrides</span> to go back to it.</p>
+    <p class="note">Wire <span class="mono">Target</span> from that player's <span class="mono">Get Keyboard Layout Input Subsystem</span> node (drag off its Local Player, e.g. via <span class="mono">Get Player Controller &rarr; Get Local Player</span>). Re-running this swaps that one player's context immediately, overriding <strong>Layout Family Mappings</strong> for that family only &mdash; call <span class="mono">Clear Layout Family Overrides</span> to go back to it.</p>
   </div>
 
   <h2>API reference</h2>
@@ -169,11 +169,11 @@ footer { margin-top: 56px; color: var(--ink-3); font-size: 13px; }
   <div class="card">
     <header><span class="name">UKeyboardLayoutSubsystem</span><span class="kind">Engine Subsystem</span></header>
     <div class="body">
-      <p>Owns detection and is the single source of truth for the current language. Exists for the lifetime of the engine.</p>
+      <p>Owns detection and is the single source of truth for the current layout family. Exists for the lifetime of the engine.</p>
       <table class="fields">
-        <tr><td class="sig event">OnKeyboardLayoutChanged</td><td class="doc">Event · <span class="mono">(NewLanguage: Keyboard Language)</span> &mdash; broadcast whenever the detected language changes.</td></tr>
-        <tr><td class="sig pure">GetCachedLanguage</td><td class="doc">Pure · returns <span class="mono">Keyboard Language</span> &mdash; the last detected language, without re-querying the OS.</td></tr>
-        <tr><td class="sig pure">GetCachedLayoutId</td><td class="doc">Pure, <em>Advanced</em> · returns <span class="mono">String</span> &mdash; the last detected raw platform layout id (Windows HKL as 8 hex digits). Only useful to tell apart layouts that share a language, e.g. France AZERTY vs. Switzerland's French QWERTZ.</td></tr>
+        <tr><td class="sig event">OnKeyboardLayoutChanged</td><td class="doc">Event · <span class="mono">(NewLayoutFamily: Keyboard Layout Family)</span> &mdash; broadcast whenever the detected layout family changes.</td></tr>
+        <tr><td class="sig pure">GetCachedLayoutFamily</td><td class="doc">Pure · returns <span class="mono">Keyboard Layout Family</span> &mdash; the last detected family, without re-querying the OS.</td></tr>
+        <tr><td class="sig pure">GetCachedLayoutId</td><td class="doc">Pure, <em>Advanced</em> · returns <span class="mono">String</span> &mdash; the last detected raw platform layout id (Windows HKL as 8 hex digits). Only useful to tell apart layouts that share a family, e.g. France AZERTY vs. Belgian AZERTY.</td></tr>
       </table>
     </div>
   </div>
@@ -182,16 +182,16 @@ footer { margin-top: 56px; color: var(--ink-3); font-size: 13px; }
     <header><span class="name">UKeyboardLayoutBPLibrary</span><span class="kind">Blueprint Function Library</span></header>
     <div class="body">
       <table class="fields">
-        <tr><td class="sig pure">GetCurrentKeyboardLanguage</td><td class="doc">Pure, static · returns <span class="mono">Keyboard Language</span> &mdash; shortcut for <span class="mono">UKeyboardLayoutSubsystem::GetCachedLanguage</span>, usable from any Blueprint without fetching the subsystem first.</td></tr>
+        <tr><td class="sig pure">GetCurrentKeyboardLayoutFamily</td><td class="doc">Pure, static · returns <span class="mono">Keyboard Layout Family</span> &mdash; shortcut for <span class="mono">UKeyboardLayoutSubsystem::GetCachedLayoutFamily</span>, usable from any Blueprint without fetching the subsystem first.</td></tr>
         <tr><td class="sig pure">GetCurrentKeyboardLayoutId</td><td class="doc">Pure, static, <em>Advanced</em> · returns <span class="mono">String</span> &mdash; shortcut for <span class="mono">GetCachedLayoutId</span>.</td></tr>
       </table>
     </div>
   </div>
 
   <div class="card">
-    <header><span class="name">EKeyboardLanguage</span><span class="kind">Enum</span></header>
+    <header><span class="name">EKeyboardLayoutFamily</span><span class="kind">Enum</span></header>
     <div class="body">
-      <p>Unknown, English, French, German, Spanish, Italian, Portuguese, Dutch, Russian, Polish, Turkish, Japanese, Korean, ChineseSimplified, ChineseTraditional. Covers the languages most games localize for; recognizing more is a one-line addition in the plugin's C++, no API change.</p>
+      <p>Unknown, QWERTY, AZERTY, QWERTZ. On Windows, the virtual-key codes for the Latin alphabet only move off QWERTY for layouts that actually rearrange it: AZERTY (France, Belgium, Luxembourg, Monaco) and QWERTZ's Y/Z swap (German-speaking layouts, and Swiss French). Every other language &mdash; including every non-Latin script, which keeps its Latin shortcuts pinned to QWERTY positions &mdash; resolves to QWERTY. Recognizing another family is a one-line addition in the plugin's C++, no API change.</p>
     </div>
   </div>
 
@@ -199,9 +199,9 @@ footer { margin-top: 56px; color: var(--ink-3); font-size: 13px; }
     <header><span class="name">UKeyboardLayoutSettings</span><span class="kind">Developer Settings &middot; Project Settings &rarr; Game &rarr; Keyboard Layout</span></header>
     <div class="body">
       <table class="fields">
-        <tr><td class="sig">Language Mappings</td><td class="doc">Map of <span class="mono">Keyboard Language &rarr; Input Mapping Context</span>. A language left out isn't reacted to. Edited directly as a map in Project Settings &mdash; no separate asset.</td></tr>
+        <tr><td class="sig">Layout Family Mappings</td><td class="doc">Map of <span class="mono">Keyboard Layout Family &rarr; Input Mapping Context</span>. A family left out isn't reacted to. Edited directly as a map in Project Settings &mdash; no separate asset.</td></tr>
         <tr><td class="sig">Mapping Priority</td><td class="doc">Int, default <span class="mono">0</span> &mdash; priority passed to <span class="mono">AddMappingContext</span> for every context above.</td></tr>
-        <tr><td class="sig">Auto Apply To Local Players</td><td class="doc">Bool, default <span class="mono">true</span> &mdash; set to <span class="mono">false</span> to ignore <strong>Language Mappings</strong> and only react to per-player overrides set via <span class="mono">SetContextForLanguage</span>.</td></tr>
+        <tr><td class="sig">Auto Apply To Local Players</td><td class="doc">Bool, default <span class="mono">true</span> &mdash; set to <span class="mono">false</span> to ignore <strong>Layout Family Mappings</strong> and only react to per-player overrides set via <span class="mono">SetContextForLayoutFamily</span>.</td></tr>
       </table>
     </div>
   </div>
@@ -209,10 +209,10 @@ footer { margin-top: 56px; color: var(--ink-3); font-size: 13px; }
   <div class="card">
     <header><span class="name">UKeyboardLayoutInputSubsystem</span><span class="kind">Local Player Subsystem</span></header>
     <div class="body">
-      <p>Applies the project's (or this player's own) language mappings to this player's Enhanced Input contexts. One instance per local player.</p>
+      <p>Applies the project's (or this player's own) layout family mappings to this player's Enhanced Input contexts. One instance per local player.</p>
       <table class="fields">
-        <tr><td class="sig">SetContextForLanguage</td><td class="doc">Callable · <span class="mono">(Language: Keyboard Language, Context: Input Mapping Context)</span> &mdash; overrides, for this player only, which context that language gets, and re-applies immediately if it's the current one. Pass <span class="mono">None</span> as Context to make this player ignore that language.</td></tr>
-        <tr><td class="sig">ClearLanguageOverrides</td><td class="doc">Callable · clears every override set via <span class="mono">SetContextForLanguage</span>, falling back to <strong>Language Mappings</strong> again.</td></tr>
+        <tr><td class="sig">SetContextForLayoutFamily</td><td class="doc">Callable · <span class="mono">(LayoutFamily: Keyboard Layout Family, Context: Input Mapping Context)</span> &mdash; overrides, for this player only, which context that family gets, and re-applies immediately if it's the current one. Pass <span class="mono">None</span> as Context to make this player ignore that family.</td></tr>
+        <tr><td class="sig">ClearLayoutFamilyOverrides</td><td class="doc">Callable · clears every override set via <span class="mono">SetContextForLayoutFamily</span>, falling back to <strong>Layout Family Mappings</strong> again.</td></tr>
       </table>
     </div>
   </div>
